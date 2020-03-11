@@ -1,30 +1,21 @@
 <template>
-  <div class="columns is-vcentered full-height is-centered">
-    <div class="column">
-      <div class="card card-width">
-        <header class="card-header">
-          <p class="card-header-title">
-            WINV
-          </p>
-        </header>
-        <div class="card-content">
-          <div class="content">
-            <section>
-              <b-field label="Username">
-                <b-input value="Kevin Garvey"></b-input>
-              </b-field>
-              <b-field label="Password">
-                <b-input type="password" value="Kevin Garvey"></b-input>
-              </b-field>
-            </section>
-          </div>
-        </div>
-        <footer class="card-footer">
-          <a href="#" class="card-footer-item">Login</a>
-        </footer>
-      </div>
-    </div>
-</div>
+  <b-container class="h-100 w-25">
+    <b-row class="h-100">
+      <b-col align-self="center">
+        <b-card title="SimpleWonder Inventory">
+          <b-form>
+            <b-form-group label="Username" label-align="left">
+              <b-form-input type="text" required></b-form-input>
+            </b-form-group>
+            <b-form-group label="Password" label-align="left">
+              <b-form-input type="password" required></b-form-input>
+            </b-form-group>
+            <b-button type="submit" variant="primary" class="w-100">Login</b-button>
+          </b-form>
+        </b-card>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
