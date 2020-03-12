@@ -1,7 +1,29 @@
 <template>
   <div class="md-layout full-height md-alignment-center-center">
     <div class="md-layout-item md-size-25">
-      <span>Lorem ipsum dolor sit amet.</span>
+      <form novalidate class="md-layout">
+        <md-card class="card-width">
+          <md-card-header>
+            <div class="md-title">SimpleWonder Inventory</div>
+          </md-card-header>
+          <md-divider></md-divider>
+          <md-card-content>
+            <md-field>
+              <label>Username</label>
+              <md-input></md-input>
+            </md-field>
+            <md-field>
+              <label>Password</label>
+              <md-input type="password"></md-input>
+            </md-field>
+          </md-card-content>
+
+          <md-card-actions>
+            <md-button class="md-primary">Sign Up</md-button>
+            <md-button class="md-accent">Login</md-button>
+          </md-card-actions>
+        </md-card>
+      </form>
     </div>
   </div>
 </template>
@@ -15,8 +37,6 @@ export default {
 
 <style lang="scss" scoped>
 .card-width {
-  width: 35%;
-  margin: 0 auto;
-  text-align: left;
+  width: 100%;
 }
 </style>

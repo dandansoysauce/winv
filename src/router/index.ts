@@ -15,14 +15,53 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard,
+    children: [
+      {
+        path: '/',
+        name: 'DashboardHome',
+        component: () => import('../views/DashboardHome.vue'),
+      },
+      {
+        path: 'products',
+        name: 'DashboardProducts',
+        component: () => import('../views/DashboardProducts.vue'),
+      },
+      {
+        path: 'producttypes',
+        name: 'DashboardProductTypes',
+        component: () => import('../views/DashboardProductTypes.vue'),
+      },
+      {
+        path: 'sales',
+        name: 'DashboardSales',
+        component: () => import('../views/DashboardSales.vue'),
+      },
+      {
+        path: 'suppliers',
+        name: 'DashboardSuppliers',
+        component: () => import('../views/DashboardSuppliers.vue'),
+      },
+      {
+        path: 'users',
+        name: 'DashboardUsers',
+        component: () => import('../views/DashboardUsers.vue'),
+      },
+    ],
   },
   {
     path: '/about',
     name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    component: () => import('../views/About.vue'),
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('../views/Profile.vue'),
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: () => import('../views/Settings.vue'),
   },
 ];
 
