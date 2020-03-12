@@ -1,6 +1,6 @@
-# WINV - An Inventory Management System
+# SimpleWonder - A simple, wonderful Inventory Management System
 
-WINV is a web-based inventory management system that offers simplicity and modern look-and-feel.
+SimpleWonder is a web-based inventory management system that offers simplicity and modern look-and-feel.
 
 ## Project setup
 
