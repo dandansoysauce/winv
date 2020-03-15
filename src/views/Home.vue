@@ -1,6 +1,6 @@
 <template>
   <div class="md-layout full-height md-alignment-center-center">
-    <div class="md-layout-item md-small-size-100 md-medium-size-75 md-large-size-35">
+    <div class="md-layout-item md-small-size-100 md-medium-size-75 md-size-35">
       <form novalidate class="md-layout">
         <md-card class="card-width">
           <md-card-header>
@@ -38,5 +38,6 @@ export default {
 <style lang="scss" scoped>
 .card-width {
   width: 100%;
+  margin: 8px;
 }
 </style>

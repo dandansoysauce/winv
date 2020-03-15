@@ -20,31 +20,49 @@ const routes = [
         path: '/',
         name: 'DashboardHome',
         component: () => import('../views/DashboardHome.vue'),
+        meta: {
+          title: '',
+        },
       },
       {
         path: 'products',
         name: 'DashboardProducts',
         component: () => import('../views/DashboardProducts.vue'),
+        meta: {
+          title: 'Products',
+        },
       },
       {
         path: 'producttypes',
         name: 'DashboardProductTypes',
         component: () => import('../views/DashboardProductTypes.vue'),
+        meta: {
+          title: 'Product Types',
+        },
       },
       {
         path: 'sales',
         name: 'DashboardSales',
         component: () => import('../views/DashboardSales.vue'),
+        meta: {
+          title: 'Sales',
+        },
       },
       {
         path: 'suppliers',
         name: 'DashboardSuppliers',
         component: () => import('../views/DashboardSuppliers.vue'),
+        meta: {
+          title: 'Suppliers',
+        },
       },
       {
         path: 'users',
         name: 'DashboardUsers',
         component: () => import('../views/DashboardUsers.vue'),
+        meta: {
+          title: 'Users',
+        },
       },
     ],
   },
@@ -52,16 +70,25 @@ const routes = [
     path: '/about',
     name: 'About',
     component: () => import('../views/About.vue'),
+    meta: {
+      title: 'About SimpleWonder',
+    },
   },
   {
     path: '/profile',
     name: 'Profile',
     component: () => import('../views/Profile.vue'),
+    meta: {
+      title: 'My Profile',
+    },
   },
   {
     path: '/settings',
     name: 'Settings',
     component: () => import('../views/Settings.vue'),
+    meta: {
+      title: 'Settings',
+    },
   },
 ];
 
