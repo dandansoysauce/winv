@@ -1,6 +1,6 @@
 <template>
   <div class="md-layout full-height md-alignment-center-center">
-    <div class="md-layout-item md-size-25">
+    <div class="md-layout-item md-small-size-100 md-medium-size-75 md-large-size-35">
       <form novalidate class="md-layout">
         <md-card class="card-width">
           <md-card-header>
