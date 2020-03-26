@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueMaterial from 'vue-material';
+import VueMasonry from 'vue-masonry-css'
 import firebase from 'firebase/app';
 import { firestorePlugin } from 'vuefire';
 import App from './App.vue';
@@ -21,6 +22,7 @@ Vue.config.productionTip = false;
 
 Vue.use(VueMaterial);
 Vue.use(firestorePlugin);
+Vue.use(VueMasonry);
 
 new Vue({
   router,

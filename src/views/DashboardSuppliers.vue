@@ -1,5 +1,5 @@
 <template>
-  <div class="container flex flex-column">
+  <div class="container flex flex-column flex-1">
     <md-dialog :md-active.sync="showDialog" class="dialog-size">
       <md-dialog-title>Add New Supplier</md-dialog-title>
       <md-dialog-content class="md-scrollbar">
@@ -39,9 +39,20 @@
       </md-dialog-actions>
     </md-dialog>
     <div class="md-layout flex-1">
-      <div class="md-layout-item md-large-size-100 md-xlarge-size-35">
-        <md-button class="md-raised md-accent add-button-margin"
-          @click="showDialog = true">Add New</md-button>
+      <div class="md-layout-item md-size-100">
+        <div class="md-layout flex-column">
+          <div class="md-layout-item">
+            <md-button class="md-raised md-accent add-button-margin"
+              @click="showDialog = true">Add New</md-button>
+          </div>
+          <div class="md-layout-item">
+            <div class="md-layout">
+              <div class="md-layout-item" v-for="supplier in suppliers" :key="supplier.id">
+                {{ supplier.Name }}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -58,10 +69,13 @@ export default class DashboardSuppliers extends Vue {
 
   supplierObject: Supplier;
 
+  suppliers: Supplier[];
+
   constructor() {
     super();
     this.showDialog = false;
     this.supplierObject = this.initAddNewSupplier();
+    this.suppliers = this.$root.$data.suppliers;
   }
 
   initAddNewSupplier(): Supplier {
