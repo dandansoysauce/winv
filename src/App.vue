@@ -31,4 +31,8 @@ html, body {
 .flex-column {
   flex-direction: column;
 }
+
+.text-align-right {
+  text-align: right;
+}
 </style>
