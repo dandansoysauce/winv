@@ -25,5 +25,11 @@ Vue.use(firestorePlugin);
 new Vue({
   router,
   store,
+  data: () => ({
+    suppliers: [],
+  }),
+  firestore: {
+    suppliers: db.collection('suppliers'),
+  },
   render: (h) => h(App),
 }).$mount('#app');

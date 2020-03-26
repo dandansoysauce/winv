@@ -1,4 +1,6 @@
-interface ProductType extends BaseObject {
+import BaseObject from './BaseObject';
+
+export default interface ProductType extends BaseObject {
   PricePerItem: number;
   Properties: any[];
   Quantity: number;

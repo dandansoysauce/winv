@@ -35,4 +35,16 @@ html, body {
 .text-align-right {
   text-align: right;
 }
+
+.dialog-save-button {
+  width: 200px;
+}
+
+.dialog-cancel-button {
+  width: 60px;
+}
+
+.dialog-buttons {
+  height: 60px;
+}
 </style>
