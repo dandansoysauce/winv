@@ -7,9 +7,9 @@ module.exports = {
     'plugin:vue/essential',
     '@vue/airbnb',
     '@vue/typescript/recommended',
-    "plugin:import/errors",
-    "plugin:import/warnings",
-    "plugin:import/typescript",
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/typescript',
   ],
   parserOptions: {
     ecmaVersion: 2020,
@@ -18,21 +18,22 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'import/extensions': [
-      "error",
-      "ignorePackages",
+      'error',
+      'ignorePackages',
       {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ]
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
+    'import/prefer-default-export': 'off',
   },
   settings: {
     'import/resolver': {
       node: {
-       paths: ["src"]
-      }
+        paths: ['src'],
+      },
     },
   },
 };
