@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueMaterial from 'vue-material';
-import VueMasonry from 'vue-masonry-css'
+import VueMasonry from 'vue-masonry-css';
 import firebase from 'firebase/app';
 import { firestorePlugin } from 'vuefire';
 import App from './App.vue';
@@ -31,7 +31,7 @@ new Vue({
     suppliers: [],
   }),
   firestore: {
-    suppliers: db.collection('suppliers'),
+    suppliers: db.collection('suppliers').orderBy('enabled'),
   },
   render: (h) => h(App),
 }).$mount('#app');

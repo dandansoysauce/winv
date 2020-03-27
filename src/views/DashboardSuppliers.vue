@@ -1,55 +1,81 @@
 <template>
   <div class="container flex flex-column flex-1">
     <md-dialog :md-active.sync="showDialog" class="dialog-size">
-      <md-dialog-title>Add New Supplier</md-dialog-title>
+      <md-dialog-title>Supplier</md-dialog-title>
       <md-dialog-content class="md-scrollbar">
         <form novalidate class="md-layout" autocomplete="off">
           <div class="md-layout">
             <md-field>
               <label>Name</label>
-              <md-input v-model="supplierObject.Name"></md-input>
+              <md-input v-model="supplierObject.name" required
+                :readonly="readOnlyDialog"></md-input>
             </md-field>
             <md-field>
               <label>Description</label>
-              <md-textarea v-model="supplierObject.Description"></md-textarea>
+              <md-textarea v-model="supplierObject.description" required
+                :readonly="readOnlyDialog"></md-textarea>
             </md-field>
             <md-field>
               <label>Address</label>
-              <md-textarea v-model="supplierObject.Address"></md-textarea>
+              <md-textarea v-model="supplierObject.address"
+                :readonly="readOnlyDialog"></md-textarea>
             </md-field>
             <md-field>
               <label>Email</label>
-              <md-input v-model="supplierObject.ContactEmail"></md-input>
+              <md-input v-model="supplierObject.contactEmail" required
+                :readonly="readOnlyDialog"></md-input>
             </md-field>
             <md-field>
               <label>Contact Number</label>
-              <md-input v-model="supplierObject.ContactNumber"></md-input>
+              <md-input v-model="supplierObject.contactNumber" required
+                :readonly="readOnlyDialog"></md-input>
             </md-field>
             <md-field>
               <label>Notes</label>
-              <md-textarea v-model="supplierObject.Notes"></md-textarea>
+              <md-textarea v-model="supplierObject.notes"
+                :readonly="readOnlyDialog"></md-textarea>
             </md-field>
           </div>
         </form>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button @click="showDialog = false">Close</md-button>
+        <md-button @click="showDialog = false"
+          :readonly="readOnlyDialog">Close</md-button>
         <md-button class="md-raised md-primary dialog-save-button"
-          @click="addNewSupplier()">Save</md-button>
+          @click="saveSupplier()" :disabled="readOnlyDialog">Save</md-button>
       </md-dialog-actions>
     </md-dialog>
     <div class="md-layout flex-1">
       <div class="md-layout-item md-size-100">
         <div class="md-layout flex-column">
           <div class="md-layout-item">
-            <md-button class="md-raised md-accent add-button-margin"
-              @click="showDialog = true">Add New</md-button>
+            <md-button class="md-raised md-accent add-button-margin margin-0"
+              @click="showDialogAsAdd()">Add New</md-button>
           </div>
-          <div class="md-layout-item">
+          <div class="md-layout-item margin-top-16">
             <div class="md-layout">
-              <div class="md-layout-item" v-for="supplier in suppliers" :key="supplier.id">
-                {{ supplier.Name }}
-              </div>
+              <masonry class="flex-1" :cols="3" :gutter="16">
+                <md-card class="supplier-cards" v-for="supplier in suppliers" :key="supplier.id">
+                  <md-card-header>
+                    <div class="md-title">
+                      {{ supplier.name }}
+                      <span class="float-right">
+                        <md-switch class="margin-0" v-model="supplier.enabled"
+                          @change="enableDisable(supplier)"></md-switch>
+                      </span>
+                    </div>
+                  </md-card-header>
+
+                  <md-card-content>
+                    {{ supplier.description }}
+                  </md-card-content>
+
+                  <md-card-actions>
+                    <md-button @click="editSupplier(supplier)">Edit</md-button>
+                    <md-button @click="viewSupplier(supplier)">View</md-button>
+                  </md-card-actions>
+                </md-card>
+              </masonry>
             </div>
           </div>
         </div>
@@ -67,6 +93,10 @@ import Supplier from '@/interfaces/Supplier';
 export default class DashboardSuppliers extends Vue {
   showDialog: boolean;
 
+  dialogMode: string;
+
+  readOnlyDialog: boolean;
+
   supplierObject: Supplier;
 
   suppliers: Supplier[];
@@ -74,32 +104,71 @@ export default class DashboardSuppliers extends Vue {
   constructor() {
     super();
     this.showDialog = false;
+    this.dialogMode = '';
+    this.readOnlyDialog = false;
     this.supplierObject = this.initAddNewSupplier();
     this.suppliers = this.$root.$data.suppliers;
   }
 
   initAddNewSupplier(): Supplier {
     return {
-      Address: '',
-      ContactEmail: '',
-      ContactNumber: '',
-      Notes: '',
-      Name: '',
-      Description: '',
-      ModifiedAt: new Date(),
-      CreatedAt: new Date(),
-      ModifiedBy: '',
+      address: '',
+      contactEmail: '',
+      contactNumber: '',
+      notes: '',
+      name: '',
+      description: '',
+      modifiedAt: new Date(),
+      createdAt: new Date(),
+      modifiedBy: '',
+      enabled: true,
     };
   }
 
-  addNewSupplier(): void {
-    this.showDialog = false;
-    this.supplierObject.CreatedAt = new Date();
-    this.supplierObject.ModifiedAt = new Date();
+  showDialogAsAdd(): void {
+    this.showDialog = true;
+    this.readOnlyDialog = false;
+    this.dialogMode = 'add';
+  }
 
-    db.collection('suppliers').add(this.supplierObject).then(() => {
-      this.supplierObject = this.initAddNewSupplier();
-    });
+  saveSupplier(): void {
+    this.showDialog = false;
+    this.supplierObject.modifiedAt = new Date();
+
+    if (this.dialogMode === 'add') {
+      this.supplierObject.createdAt = new Date();
+      db.collection('suppliers').add(this.supplierObject).then(() => {
+        this.supplierObject = this.initAddNewSupplier();
+      });
+    } else if (this.dialogMode === 'edit') {
+      db.collection('suppliers').doc(this.supplierObject.id).set(this.supplierObject).then(() => {
+        this.supplierObject = this.initAddNewSupplier();
+      });
+    }
+  }
+
+  editSupplier(supplier: Supplier): void {
+    this.showDialog = true;
+    this.readOnlyDialog = false;
+    this.dialogMode = 'edit';
+    this.supplierObject = supplier;
+  }
+
+  enableDisable(supplier: Supplier): void {
+    const state = supplier.enabled;
+    db.collection('suppliers').doc(supplier.id).update({ enabled: state, modifiedAt: new Date() });
+  }
+
+  viewSupplier(supplier: Supplier): void {
+    this.showDialog = true;
+    this.readOnlyDialog = true;
+    this.supplierObject = supplier;
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.supplier-cards {
+  margin: 0;
+}
+</style>

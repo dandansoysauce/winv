@@ -36,6 +36,22 @@ html, body {
   text-align: right;
 }
 
+.float-right {
+  float: right;
+}
+
+.width-100 {
+  width: 100%;
+}
+
+.margin-0 {
+  margin: 0 !important;
+}
+
+.margin-top-16 {
+  margin-top: 16px !important;
+}
+
 .dialog-save-button {
   width: 200px;
 }

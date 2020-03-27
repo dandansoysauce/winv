@@ -1,7 +1,9 @@
 export default interface BaseObject {
-  Name: string;
-  Description: string;
-  ModifiedAt: Date;
-  CreatedAt: Date;
-  ModifiedBy: string;
+  id?: string;
+  name: string;
+  description: string;
+  modifiedAt: Date;
+  createdAt: Date;
+  modifiedBy: string;
+  enabled: boolean;
 }

@@ -1,8 +1,8 @@
 import BaseObject from './BaseObject';
 
 export default interface Supplier extends BaseObject {
-  Address: string;
-  ContactEmail: string;
-  ContactNumber: string;
-  Notes: string;
+  address: string;
+  contactEmail: string;
+  contactNumber: string;
+  notes: string;
 }
