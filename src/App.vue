@@ -52,6 +52,10 @@ html, body {
   margin-top: 16px !important;
 }
 
+.padding-right-16 {
+  padding-right: 16px !important;
+}
+
 .dialog-save-button {
   width: 200px;
 }

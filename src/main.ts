@@ -29,9 +29,11 @@ new Vue({
   store,
   data: () => ({
     suppliers: [],
+    productTypes: [],
   }),
   firestore: {
     suppliers: db.collection('suppliers').orderBy('enabled'),
+    productTypes: db.collection('producttypes').orderBy('enabled'),
   },
   render: (h) => h(App),
 }).$mount('#app');

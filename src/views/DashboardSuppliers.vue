@@ -45,6 +45,7 @@
           @click="saveSupplier()" :disabled="readOnlyDialog">Save</md-button>
       </md-dialog-actions>
     </md-dialog>
+    <h1>Suppliers</h1>
     <div class="md-layout flex-1">
       <div class="md-layout-item md-size-100">
         <div class="md-layout flex-column">
