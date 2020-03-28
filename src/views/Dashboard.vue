@@ -40,6 +40,10 @@
             <md-icon>attach_money</md-icon>
             <span class="md-list-item-text">Sales</span>
           </md-list-item>
+          <md-list-item to="/dashboard/sales" @click="changeWhereAmI('Sales')">
+            <md-icon>devices</md-icon>
+            <span class="md-list-item-text">Mini POS</span>
+          </md-list-item>
 
           <md-subheader>Me</md-subheader>
           <md-list-item>
