@@ -56,6 +56,16 @@ html, body {
   padding-right: 16px !important;
 }
 
+.padding-left-16 {
+  padding-left: 16px !important;
+}
+
+.dialog-size {
+  width: 600px;
+  height: 650px;
+  max-height: 650px;
+}
+
 .dialog-save-button {
   width: 200px;
 }

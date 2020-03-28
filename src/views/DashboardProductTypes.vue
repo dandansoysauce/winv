@@ -40,7 +40,7 @@
                     <md-select v-model="pr.propertyType" :readonly="readOnlyDialog">
                       <md-option value="text">Text</md-option>
                       <md-option value="number">Number</md-option>
-                      <md-option value="datetime">Date and Time</md-option>
+                      <md-option value="date">Date</md-option>
                       <md-option value="bool">Checkbox</md-option>
                     </md-select>
                   </md-field>
@@ -212,11 +212,5 @@ export default class DashboardProductTypes extends Vue {
 
 .add-card-margin-top {
   margin-top: 22px;
-}
-
-.dialog-size {
-  width: 600px;
-  height: 650px;
-  max-height: 650px;
 }
 </style>
