@@ -67,6 +67,14 @@ const routes = [
     ],
   },
   {
+    path: '/minipos',
+    name: 'Mini POS',
+    component: () => import('../views/MiniPos.vue'),
+    meta: {
+      title: 'Mini POS',
+    },
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import('../views/About.vue'),

@@ -32,6 +32,14 @@ html, body {
   flex-direction: column;
 }
 
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-items-center {
+  align-items: center;
+}
+
 .text-align-right {
   text-align: right;
 }
@@ -50,6 +58,14 @@ html, body {
 
 .margin-top-16 {
   margin-top: 16px !important;
+}
+
+.margin-left-16 {
+  margin-left: 16px !important;
+}
+
+.padding-all-24 {
+  padding: 24 !important;
 }
 
 .padding-right-16 {
