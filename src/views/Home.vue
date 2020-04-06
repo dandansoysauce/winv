@@ -9,18 +9,18 @@
           <md-divider></md-divider>
           <md-card-content>
             <md-field>
-              <label>Username</label>
-              <md-input></md-input>
+              <label>Email</label>
+              <md-input v-model="userEmail"></md-input>
             </md-field>
             <md-field>
               <label>Password</label>
-              <md-input type="password"></md-input>
+              <md-input type="password" v-model="userPassword"></md-input>
             </md-field>
           </md-card-content>
 
           <md-card-actions>
             <md-button class="md-primary">Sign Up</md-button>
-            <md-button class="md-accent">Login</md-button>
+            <md-button class="md-accent" @click="loginUser()">Login</md-button>
           </md-card-actions>
         </md-card>
       </form>
@@ -28,11 +28,29 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Home',
-  components: {},
-};
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import * as firebase from 'firebase/app';
+
+@Component
+export default class Dashboard extends Vue {
+  userEmail: string;
+
+  userPassword: string;
+
+  constructor() {
+    super();
+    this.userEmail = '';
+    this.userPassword = '';
+  }
+
+  loginUser(): void {
+    if (this.userEmail.length > 0 && this.userPassword.length > 0) {
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(() => firebase.auth().signInWithEmailAndPassword(this.userEmail, this.userPassword));
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -40,17 +40,17 @@
             <md-icon>attach_money</md-icon>
             <span class="md-list-item-text">Sales</span>
           </md-list-item>
-          <md-list-item to="/minipos" @click="changeWhereAmI('Mini Point-of-Sale')">
+          <!-- <md-list-item to="/minipos" @click="changeWhereAmI('Mini Point-of-Sale')">
             <md-icon>devices</md-icon>
             <span class="md-list-item-text">Mini POS</span>
-          </md-list-item>
+          </md-list-item> -->
 
           <md-subheader>Me</md-subheader>
           <md-list-item>
             <md-icon>face</md-icon>
             <span class="md-list-item-text">Profile</span>
           </md-list-item>
-          <md-list-item>
+          <md-list-item @click="signoutUser()">
             <md-icon>exit_to_app</md-icon>
             <span class="md-list-item-text">Logout</span>
           </md-list-item>
@@ -73,6 +73,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import * as firebase from 'firebase/app';
 
 @Component
 export default class Dashboard extends Vue {
@@ -92,6 +93,12 @@ export default class Dashboard extends Vue {
 
   changeWhereAmI(routeName) {
     this.whereAmI = routeName;
+  }
+
+  signoutUser() {
+    firebase.auth().signOut().then(() => {
+      this.$router.push({ name: 'Home' });
+    });
   }
 }
 </script>

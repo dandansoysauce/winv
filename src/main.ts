@@ -6,6 +6,7 @@ import { firestorePlugin } from 'vuefire';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import 'firebase/auth';
 import 'firebase/firestore';
 
 import 'vue-material/dist/vue-material.min.css';
@@ -38,4 +39,13 @@ new Vue({
     products: db.collection('products').orderBy('enabled'),
   },
   render: (h) => h(App),
+  created() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user && router.currentRoute.name !== 'DashboardHome') {
+        router.push({ name: 'DashboardHome' });
+      } else if (user === null && router.currentRoute.name !== 'Home') {
+        router.push({ name: 'Home' });
+      }
+    });
+  },
 }).$mount('#app');
