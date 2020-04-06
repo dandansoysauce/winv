@@ -53,6 +53,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { db } from '@/main';
 import * as firebase from 'firebase/app';
 import User from '@/interfaces/User';
 import Store from '@/interfaces/Store';
@@ -98,7 +99,11 @@ export default class AccountCreation extends Vue {
   }
 
   registerAccount() {
-    console.log('register my account');
+    firebase.auth().createUserWithEmailAndPassword(this.userObject.email, this.userObject.password)
+      .then(() => {
+        // db.collection()
+        console.log('logged in');
+      });
   }
 }
 </script>
