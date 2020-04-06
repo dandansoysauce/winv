@@ -4,7 +4,7 @@
       <form novalidate class="md-layout">
         <md-card class="card-width">
           <md-card-header>
-            <div class="md-title">SimpleWonder Inventory</div>
+            <div class="md-title">Sign In - SimpleWonder Inventory</div>
           </md-card-header>
           <md-divider></md-divider>
           <md-card-content>
@@ -19,7 +19,7 @@
           </md-card-content>
 
           <md-card-actions>
-            <md-button class="md-primary">Sign Up</md-button>
+            <md-button class="md-primary" to="/accountcreation">Sign Up</md-button>
             <md-button class="md-accent" @click="loginUser()">Login</md-button>
           </md-card-actions>
         </md-card>

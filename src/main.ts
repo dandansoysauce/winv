@@ -28,6 +28,11 @@ Vue.use(VueMaterial);
 Vue.use(firestorePlugin);
 Vue.use(VueMasonry);
 
+router.beforeEach((to, from, next) => {
+  document.title = `${to.meta.title} - SimpleWonder Inventory`;
+  next();
+});
+
 new Vue({
   router,
   store,
@@ -46,7 +51,7 @@ new Vue({
     firebase.auth().onAuthStateChanged((user) => {
       if (user && router.currentRoute.name !== 'DashboardHome') {
         router.push({ name: 'DashboardHome' });
-      } else if (user === null && router.currentRoute.name !== 'Home') {
+      } else if (user === null && router.currentRoute.name !== 'Home' && router.currentRoute.name !== 'AccountCreation') {
         router.push({ name: 'Home' });
       }
     });

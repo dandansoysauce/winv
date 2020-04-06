@@ -98,6 +98,14 @@ const routes = [
       title: 'Settings',
     },
   },
+  {
+    path: '/accountcreation/:inviteCode?',
+    name: 'AccountCreation',
+    component: () => import('../views/AccountCreation.vue'),
+    meta: {
+      title: 'Account Creation',
+    },
+  },
 ];
 
 const router = new VueRouter({
