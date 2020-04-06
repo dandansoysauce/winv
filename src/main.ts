@@ -8,6 +8,7 @@ import router from './router';
 import store from './store';
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/storage';
 
 import 'vue-material/dist/vue-material.min.css';
 import 'vue-material/dist/theme/default-dark.css';
@@ -16,8 +17,10 @@ export const db = firebase.initializeApp(
   {
     projectId: process.env.VUE_APP_PROJECT_ID,
     apiKey: process.env.VUE_APP_FIREBASE_WEBAPI,
+    storageBucket: process.env.VUE_APP_FIREBASE_BUCKET,
   },
 ).firestore();
+export const storage = firebase.storage();
 
 Vue.config.productionTip = false;
 
