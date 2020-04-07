@@ -30,10 +30,11 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { db } from '@/main';
 import * as firebase from 'firebase/app';
 
 @Component
-export default class Dashboard extends Vue {
+export default class Home extends Vue {
   userEmail: string;
 
   userPassword: string;
@@ -47,7 +48,16 @@ export default class Dashboard extends Vue {
   loginUser(): void {
     if (this.userEmail.length > 0 && this.userPassword.length > 0) {
       firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-        .then(() => firebase.auth().signInWithEmailAndPassword(this.userEmail, this.userPassword));
+        .then(() => {
+          firebase.auth().signInWithEmailAndPassword(this.userEmail, this.userPassword)
+            .then((user) => {
+              db.collection('users').doc(user?.user?.uid).get().then((snapshot) => {
+                this.$store.dispatch('setUser', snapshot.data()).then(() => {
+                  console.log('added set to store');
+                });
+              });
+            });
+        });
     }
   }
 }

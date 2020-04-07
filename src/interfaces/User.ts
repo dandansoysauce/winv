@@ -1,8 +1,11 @@
 export default interface User {
   id?: string;
+  storeId?: string;
   name: string;
   email: string;
-  password: string;
-  dateCreated: Date;
-  dateModified: Date;
+  phoneNumber: string;
+  emailVerified: boolean;
+  password?: string;
+  createdAt: Date;
+  modifiedAt: Date;
 }

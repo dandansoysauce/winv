@@ -28,10 +28,10 @@
             <md-icon>how_to_vote</md-icon>
             <span class="md-list-item-text">Suppliers</span>
           </md-list-item>
-          <md-list-item to="/dashboard/users" @click="changeWhereAmI('Users')">
+          <!-- <md-list-item to="/dashboard/users" @click="changeWhereAmI('Users')">
             <md-icon>people</md-icon>
             <span class="md-list-item-text">Users</span>
-          </md-list-item>
+          </md-list-item> -->
           <md-list-item to="/dashboard/producttypes" @click="changeWhereAmI('Product Types')">
             <md-icon>notes</md-icon>
             <span class="md-list-item-text">Product Types</span>

@@ -29,7 +29,12 @@ Vue.use(firestorePlugin);
 Vue.use(VueMasonry);
 
 router.beforeEach((to, from, next) => {
-  document.title = `${to.meta.title} - SimpleWonder Inventory`;
+  if (to.meta.title) {
+    document.title = `${to.meta.title} - SimpleWonder Inventory`;
+  } else {
+    document.title = 'SimpleWonder Inventory';
+  }
+
   next();
 });
 

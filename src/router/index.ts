@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
-import Dashboard from '../views/Dashboard.vue';
 
 Vue.use(VueRouter);
 
@@ -9,19 +7,19 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home,
+    component: () => import('@/views/Home.vue'),
   },
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: Dashboard,
+    component: () => import('../views/Dashboard.vue'),
     children: [
       {
         path: '/',
         name: 'DashboardHome',
         component: () => import('../views/DashboardHome.vue'),
         meta: {
-          title: '',
+          title: 'Dashboard Home',
         },
       },
       {

@@ -1,7 +1,8 @@
 export default interface Store {
   id?: string;
+  inviteCode?: string;
   storeName: string;
   storeAddress: string;
-  dateCreated: Date;
-  dateModified: Date;
+  createdAt: Date;
+  modifiedAt: Date;
 }

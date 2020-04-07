@@ -20,6 +20,10 @@
                   <md-input v-model="userObject.email" required></md-input>
                 </md-field>
                 <md-field>
+                  <label>Phone Number</label>
+                  <md-input v-model="userObject.phoneNumber"></md-input>
+                </md-field>
+                <md-field>
                   <label>Password</label>
                   <md-input v-model="userObject.password" type="password" required></md-input>
                 </md-field>
@@ -57,6 +61,7 @@ import { db } from '@/main';
 import * as firebase from 'firebase/app';
 import User from '@/interfaces/User';
 import Store from '@/interfaces/Store';
+import uniqid from 'uniqid';
 
 @Component
 export default class AccountCreation extends Vue {
@@ -72,6 +77,8 @@ export default class AccountCreation extends Vue {
 
   confirmPassword: string;
 
+  // hasInviteCode: string;
+
   constructor() {
     super();
     this.active = 'basicInfo';
@@ -81,16 +88,22 @@ export default class AccountCreation extends Vue {
       name: '',
       email: '',
       password: '',
-      dateCreated: new Date(),
-      dateModified: new Date(),
+      phoneNumber: '',
+      createdAt: new Date(),
+      modifiedAt: new Date(),
+      emailVerified: false,
     };
     this.storeObject = {
       storeName: '',
       storeAddress: '',
-      dateCreated: new Date(),
-      dateModified: new Date(),
+      createdAt: new Date(),
+      modifiedAt: new Date(),
     };
     this.confirmPassword = '';
+  }
+
+  created() {
+    console.log(this.$route.params.inviteCode);
   }
 
   continueStep() {
@@ -99,10 +112,27 @@ export default class AccountCreation extends Vue {
   }
 
   registerAccount() {
-    firebase.auth().createUserWithEmailAndPassword(this.userObject.email, this.userObject.password)
-      .then(() => {
-        // db.collection()
-        console.log('logged in');
+    firebase.auth().createUserWithEmailAndPassword(this.userObject.email, this.userObject.password ?? '')
+      .then((data) => {
+        this.storeObject.createdAt = new Date();
+        this.storeObject.modifiedAt = new Date();
+        this.storeObject.inviteCode = uniqid();
+        db.collection('stores').add(this.storeObject).then((res) => {
+          delete this.userObject.password;
+          this.userObject.id = data?.user?.uid;
+          this.userObject.createdAt = new Date();
+          this.userObject.modifiedAt = new Date();
+          this.userObject.storeId = res.id;
+          this.userObject.emailVerified = data?.user?.emailVerified ?? false;
+          db.collection('users').doc(this.userObject.id).set(this.userObject).then(() => {
+            const updateProfile = data?.user?.updateProfile({
+              displayName: this.userObject.name,
+            });
+            console.log('profile updated', updateProfile);
+          });
+        });
+      }).catch((err) => {
+        console.log(err);
       });
   }
 }
