@@ -106,6 +106,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { db } from '@/main';
 import ProductType from '@/interfaces/ProductType';
 import ProductPropertyType from '@/interfaces/ProductPropertyType';
+import User from '@/interfaces/User';
 import uniqid from 'uniqid';
 
 @Component
@@ -120,13 +121,26 @@ export default class DashboardProductTypes extends Vue {
 
   productTypes: ProductType[];
 
+  currentUser: User;
+
   constructor() {
     super();
     this.showDialog = false;
     this.dialogMode = '';
     this.readOnlyDialog = false;
+    this.productTypes = Array<ProductType>();
+    this.productTypeObject = {} as ProductType;
+    this.currentUser = {} as User;
+  }
+
+  created() {
+    this.currentUser = this.$store.state.currentUser;
     this.productTypeObject = this.initProductTypeObject();
-    this.productTypes = this.$root.$data.productTypes;
+    if (this.currentUser) {
+      this.$bind('productTypes', db.collection('producttypes').where('storeId', '==', this.currentUser.storeId));
+    } else {
+      this.productTypes = [];
+    }
   }
 
   showDialogAsAdd(): void {
@@ -183,6 +197,7 @@ export default class DashboardProductTypes extends Vue {
       createdAt: new Date(),
       modifiedBy: '',
       enabled: true,
+      storeId: this.currentUser.storeId,
     };
   }
 

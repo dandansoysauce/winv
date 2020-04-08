@@ -89,6 +89,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { db } from '@/main';
 import Supplier from '@/interfaces/Supplier';
+import User from '@/interfaces/User';
 
 @Component
 export default class DashboardSuppliers extends Vue {
@@ -102,13 +103,26 @@ export default class DashboardSuppliers extends Vue {
 
   suppliers: Supplier[];
 
+  currentUser: User;
+
   constructor() {
     super();
     this.showDialog = false;
     this.dialogMode = '';
     this.readOnlyDialog = false;
+    this.suppliers = Array<Supplier>();
+    this.currentUser = {} as User;
+    this.supplierObject = {} as Supplier;
+  }
+
+  created() {
+    this.currentUser = this.$store.state.currentUser;
     this.supplierObject = this.initAddNewSupplier();
-    this.suppliers = this.$root.$data.suppliers;
+    if (this.currentUser) {
+      this.$bind('suppliers', db.collection('suppliers').where('storeId', '==', this.currentUser.storeId));
+    } else {
+      this.suppliers = [];
+    }
   }
 
   initAddNewSupplier(): Supplier {
@@ -123,6 +137,7 @@ export default class DashboardSuppliers extends Vue {
       createdAt: new Date(),
       modifiedBy: '',
       enabled: true,
+      storeId: this.currentUser.storeId,
     };
   }
 

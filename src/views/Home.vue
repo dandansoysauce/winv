@@ -53,7 +53,7 @@ export default class Home extends Vue {
             .then((user) => {
               db.collection('users').doc(user?.user?.uid).get().then((snapshot) => {
                 this.$store.dispatch('setUser', snapshot.data()).then(() => {
-                  console.log('added set to store');
+                  console.log('user set to store');
                 });
               });
             });

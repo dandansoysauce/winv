@@ -38,6 +38,11 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
+// router.beforeEach((to, from, next) => {
+//   const user = store.state.currentUser;
+//   next();
+// })
+
 new Vue({
   router,
   store,
@@ -46,15 +51,22 @@ new Vue({
     productTypes: [],
     products: [],
   }),
-  firestore: {
-    suppliers: db.collection('suppliers').orderBy('enabled'),
-    productTypes: db.collection('producttypes').orderBy('enabled'),
-    products: db.collection('products').orderBy('enabled'),
+  firestore() {
+    return {
+      suppliers: db.collection('suppliers').orderBy('enabled'),
+      productTypes: db.collection('producttypes').orderBy('enabled'),
+      products: db.collection('products').orderBy('enabled'),
+    };
   },
   render: (h) => h(App),
   created() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user && router.currentRoute.name !== 'DashboardHome') {
+        db.collection('users').doc(user.uid).get().then((snapshot) => {
+          this.$store.dispatch('setUser', snapshot.data()).then(() => {
+            console.log('user set to store');
+          });
+        });
         router.push({ name: 'DashboardHome' });
       } else if (user === null && router.currentRoute.name !== 'Home' && router.currentRoute.name !== 'AccountCreation') {
         router.push({ name: 'Home' });

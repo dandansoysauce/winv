@@ -117,7 +117,7 @@
                     </div>
                     <div class="md-subhead">
                       <md-icon>ballot</md-icon>
-                      <span class="padding-right-16"> {{ product.quantity }} pcs left</span>&nbsp;
+                      <span class="padding-right-16"> {{ product.quantity }} in stock</span>&nbsp;
                       <md-icon>money</md-icon>
                       <span> {{ product.pricePerItem }} each</span>
                     </div>
@@ -149,6 +149,7 @@ import Product from '@/interfaces/Product';
 import Supplier from '@/interfaces/Supplier';
 import ProductType from '@/interfaces/ProductType';
 import ProductPropertyType from '@/interfaces/ProductPropertyType';
+import User from '@/interfaces/User';
 
 @Component
 export default class DashboardProducts extends Vue {
@@ -168,16 +169,31 @@ export default class DashboardProducts extends Vue {
 
   products: Product[];
 
+  currentUser: User;
+
   constructor() {
     super();
     this.showDialog = false;
     this.dialogMode = '';
     this.readOnlyDialog = false;
-    this.productObject = this.initProductObject();
     this.productObjectCustomProperties = [];
-    this.productTypes = this.$root.$data.productTypes;
-    this.suppliers = this.$root.$data.suppliers;
-    this.products = this.$root.$data.products;
+    this.productTypes = Array<ProductType>();
+    this.suppliers = Array<Supplier>();
+    this.products = Array<Product>();
+    this.productObject = {} as Product;
+    this.currentUser = {} as User;
+  }
+
+  created() {
+    this.currentUser = this.$store.state.currentUser;
+    this.productObject = this.initProductObject();
+    if (this.currentUser) {
+      this.$bind('productTypes', db.collection('producttypes').where('storeId', '==', this.currentUser.storeId));
+      this.$bind('suppliers', db.collection('suppliers').where('storeId', '==', this.currentUser.storeId));
+      this.$bind('products', db.collection('products').where('storeId', '==', this.currentUser.storeId));
+    } else {
+      this.productTypes = [];
+    }
   }
 
   showDialogAsAdd(): void {
@@ -248,6 +264,7 @@ export default class DashboardProducts extends Vue {
       modifiedBy: '',
       enabled: true,
       properties: [],
+      storeId: this.currentUser.storeId,
     };
   }
 }
