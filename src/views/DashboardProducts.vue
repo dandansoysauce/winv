@@ -101,7 +101,7 @@
         <div class="md-layout flex-column">
           <div class="md-layout-item">
             <md-button class="md-raised md-accent margin-0"
-              @click="showDialogAsAdd()">Add New</md-button>
+              @click="showDialogAsAdd()">Add Product</md-button>
           </div>
           <div class="md-layout-item margin-top-16">
             <div class="md-layout">
@@ -130,6 +130,8 @@
                   <md-card-actions>
                     <md-button @click="editProduct(product)">Edit</md-button>
                     <md-button @click="viewProduct(product)">View</md-button>
+                    <md-button class="md-raised md-primary"
+                      @click="editProduct(product)">Restock</md-button>
                   </md-card-actions>
                 </md-card>
               </masonry>
@@ -193,6 +195,8 @@ export default class DashboardProducts extends Vue {
       this.$bind('products', db.collection('products').where('storeId', '==', this.currentUser.storeId));
     } else {
       this.productTypes = [];
+      this.suppliers = [];
+      this.products = [];
     }
   }
 
@@ -261,7 +265,7 @@ export default class DashboardProducts extends Vue {
       description: '',
       modifiedAt: new Date(),
       createdAt: new Date(),
-      modifiedBy: '',
+      modifiedBy: this.currentUser.id ?? '',
       enabled: true,
       properties: [],
       storeId: this.currentUser.storeId,

@@ -18,7 +18,7 @@
         <md-list class="drawer-height">
           <md-list-item to="/dashboard/" @click="changeWhereAmI()" exact>
             <md-icon>dashboard</md-icon>
-            <span class="md-list-item-text">Overview</span>
+            <span class="md-list-item-text">Dashboard</span>
           </md-list-item>
           <md-list-item to="/dashboard/products" @click="changeWhereAmI('Products')">
             <md-icon>ballot</md-icon>

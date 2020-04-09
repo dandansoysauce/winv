@@ -48,16 +48,14 @@ export default class Home extends Vue {
   loginUser(): void {
     if (this.userEmail.length > 0 && this.userPassword.length > 0) {
       firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-        .then(() => {
-          firebase.auth().signInWithEmailAndPassword(this.userEmail, this.userPassword)
-            .then((user) => {
-              db.collection('users').doc(user?.user?.uid).get().then((snapshot) => {
-                this.$store.dispatch('setUser', snapshot.data()).then(() => {
-                  console.log('user set to store');
-                });
+        .then(() => firebase.auth().signInWithEmailAndPassword(this.userEmail, this.userPassword)
+          .then((user) => {
+            db.collection('users').doc(user?.user?.uid).get().then((snapshot) => {
+              this.$store.dispatch('setUser', snapshot.data()).then(() => {
+                console.log('user set to store');
               });
             });
-        });
+          }));
     }
   }
 }

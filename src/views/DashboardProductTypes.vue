@@ -67,7 +67,7 @@
         <div class="md-layout flex-column">
           <div class="md-layout-item">
             <md-button class="md-raised md-accent margin-0"
-              @click="showDialogAsAdd()">Add New</md-button>
+              @click="showDialogAsAdd()">Add Product Type</md-button>
           </div>
           <div class="md-layout-item margin-top-16">
             <div class="md-layout">
@@ -195,7 +195,7 @@ export default class DashboardProductTypes extends Vue {
       description: '',
       modifiedAt: new Date(),
       createdAt: new Date(),
-      modifiedBy: '',
+      modifiedBy: this.currentUser.id ?? '',
       enabled: true,
       storeId: this.currentUser.storeId,
     };
