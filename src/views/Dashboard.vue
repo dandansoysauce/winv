@@ -1,5 +1,38 @@
 <template>
-  <div class="full-height">
+  <v-app id="inspire">
+    <v-navigation-drawer v-model="drawer" app clipped>
+      <v-list>
+        <v-list-item link>
+          <v-list-item-action>
+            <v-icon>mdi-view-dashboard</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Dashboard</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link @click="signoutUser()">
+          <v-list-item-action>
+            <v-icon>mdi-exit-to-app</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-app-bar app clipped-left>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <v-toolbar-title>Application</v-toolbar-title>
+    </v-app-bar>
+
+    <v-content>
+      <v-container class="fill-height" fluid>
+        <router-view/>
+      </v-container>
+    </v-content>
+  </v-app>
+  <!-- <div class="full-height">
     <md-app class="full-height" md-waterfall md-mode="fixed">
       <md-app-toolbar class="md-primary">
         <md-button class="md-icon-button menu"
@@ -28,24 +61,24 @@
             <md-icon>how_to_vote</md-icon>
             <span class="md-list-item-text">Suppliers</span>
           </md-list-item>
-          <!-- <md-list-item to="/dashboard/users" @click="changeWhereAmI('Users')">
+          <md-list-item to="/dashboard/users" @click="changeWhereAmI('Users')">
             <md-icon>people</md-icon>
             <span class="md-list-item-text">Users</span>
           </md-list-item> -->
-          <md-list-item to="/dashboard/producttypes" @click="changeWhereAmI('Product Types')">
+          <!-- <md-list-item to="/dashboard/producttypes" @click="changeWhereAmI('Product Types')">
             <md-icon>notes</md-icon>
             <span class="md-list-item-text">Product Types</span>
           </md-list-item>
           <md-list-item to="/dashboard/sales" @click="changeWhereAmI('Sales')">
             <md-icon>attach_money</md-icon>
             <span class="md-list-item-text">Sales</span>
-          </md-list-item>
+          </md-list-item> -->
           <!-- <md-list-item to="/minipos" @click="changeWhereAmI('Mini Point-of-Sale')">
             <md-icon>devices</md-icon>
             <span class="md-list-item-text">Mini POS</span>
           </md-list-item> -->
 
-          <md-subheader>Me</md-subheader>
+          <!-- <md-subheader>Me</md-subheader>
           <md-list-item>
             <md-icon>face</md-icon>
             <span class="md-list-item-text">Profile</span>
@@ -68,7 +101,7 @@
         <router-view/>
       </md-app-content>
     </md-app>
-  </div>
+  </div> -->
 </template>
 
 <script lang="ts">
@@ -81,14 +114,21 @@ export default class Dashboard extends Vue {
 
   whereAmI: string;
 
+  drawer: boolean;
+
   constructor() {
     super();
     this.showNavigation = false;
     this.whereAmI = '';
+    this.drawer = true;
   }
 
   mounted() {
     this.whereAmI = this.$route.meta.title;
+  }
+
+  created() {
+    this.$vuetify.theme.dark = true;
   }
 
   changeWhereAmI(routeName) {

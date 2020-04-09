@@ -1,6 +1,5 @@
 import Vue from 'vue';
-// import VueMaterial from 'vue-material';
-import Vuetify from 'vuetify';
+import vuetify from '@/plugins/vuetify';
 import VueMasonry from 'vue-masonry-css';
 import firebase from 'firebase/app';
 import { firestorePlugin } from 'vuefire';
@@ -10,8 +9,6 @@ import store from './store';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
-
-import 'vuetify/dist/vuetify.min.css';
 
 export const db = firebase.initializeApp(
   {
@@ -24,7 +21,6 @@ export const storage = firebase.storage();
 
 Vue.config.productionTip = false;
 
-Vue.use(Vuetify);
 Vue.use(firestorePlugin);
 Vue.use(VueMasonry);
 
@@ -39,6 +35,7 @@ router.beforeEach((to, from, next) => {
 });
 
 new Vue({
+  vuetify,
   router,
   store,
   data: () => ({

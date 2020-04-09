@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="full-height">
+  <v-app id="app" class="full-height">
     <router-view/>
-  </div>
+  </v-app>
 </template>
 
 <style lang="scss">
