@@ -45,6 +45,14 @@
         <v-divider></v-divider>
         <v-list-item link>
           <v-list-item-action>
+            <v-icon>mdi-account-circle</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Profile</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link>
+          <v-list-item-action>
             <v-icon>mdi-account-cog</v-icon>
           </v-list-item-action>
           <v-list-item-content>
@@ -65,10 +73,6 @@
     <v-app-bar app clipped-left>
       <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
       <v-toolbar-title>{{ getStoreName }}</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
-      </v-btn>
     </v-app-bar>
 
     <v-content>
