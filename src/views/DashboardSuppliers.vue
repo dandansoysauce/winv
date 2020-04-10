@@ -1,88 +1,69 @@
 <template>
-  <div class="container flex flex-column flex-1">
-    <md-dialog :md-active.sync="showDialog" class="dialog-size">
-      <md-dialog-title>Supplier</md-dialog-title>
-      <md-dialog-content class="md-scrollbar">
-        <form novalidate class="md-layout" autocomplete="off">
-          <div class="md-layout">
-            <md-field>
-              <label>Name</label>
-              <md-input v-model="supplierObject.name" required
-                :readonly="readOnlyDialog"></md-input>
-            </md-field>
-            <md-field>
-              <label>Description</label>
-              <md-textarea v-model="supplierObject.description" required
-                :readonly="readOnlyDialog"></md-textarea>
-            </md-field>
-            <md-field>
-              <label>Address</label>
-              <md-textarea v-model="supplierObject.address"
-                :readonly="readOnlyDialog"></md-textarea>
-            </md-field>
-            <md-field>
-              <label>Email</label>
-              <md-input v-model="supplierObject.contactEmail" required
-                :readonly="readOnlyDialog"></md-input>
-            </md-field>
-            <md-field>
-              <label>Contact Number</label>
-              <md-input v-model="supplierObject.contactNumber" required
-                :readonly="readOnlyDialog"></md-input>
-            </md-field>
-            <md-field>
-              <label>Notes</label>
-              <md-textarea v-model="supplierObject.notes"
-                :readonly="readOnlyDialog"></md-textarea>
-            </md-field>
-          </div>
-        </form>
-      </md-dialog-content>
-      <md-dialog-actions>
-        <md-button @click="showDialog = false"
-          :readonly="readOnlyDialog">Close</md-button>
-        <md-button class="md-raised md-primary dialog-save-button"
-          @click="saveSupplier()" :disabled="readOnlyDialog">Save</md-button>
-      </md-dialog-actions>
-    </md-dialog>
-    <h1>Suppliers</h1>
-    <div class="md-layout flex-1">
-      <div class="md-layout-item md-size-100">
-        <div class="md-layout flex-column">
-          <div class="md-layout-item">
-            <md-button class="md-raised md-accent add-button-margin margin-0"
-              @click="showDialogAsAdd()">Add Supplier</md-button>
-          </div>
-          <div class="md-layout-item margin-top-16">
-            <div class="md-layout">
-              <masonry class="flex-1" :cols="3" :gutter="16">
-                <md-card class="supplier-cards" v-for="supplier in suppliers" :key="supplier.id">
-                  <md-card-header>
-                    <div class="md-title">
-                      {{ supplier.name }}
-                      <span class="float-right">
-                        <md-switch class="margin-0" v-model="supplier.enabled"
-                          @change="enableDisable(supplier)"></md-switch>
-                      </span>
-                    </div>
-                  </md-card-header>
-
-                  <md-card-content>
-                    {{ supplier.description }}
-                  </md-card-content>
-
-                  <md-card-actions>
-                    <md-button @click="editSupplier(supplier)">Edit</md-button>
-                    <md-button @click="viewSupplier(supplier)">View</md-button>
-                  </md-card-actions>
-                </md-card>
-              </masonry>
-            </div>
-          </div>
+  <v-container class="fill-height align-start">
+    <div class="d-flex flex-column fill-height width-100">
+      <h1>Suppliers</h1>
+      <div class="d-flex flex-column fill-height">
+        <div class="d-flex mt-2">
+          <v-btn raised color="primary" @click="showDialogAsAdd()">Add Supplier</v-btn>
+        </div>
+        <div class="fill-height mt-4">
+          <v-row>
+            <v-col v-for="supplier in suppliers" :key="supplier.id"
+              cols="12" sm="4">
+              <v-card class="mx-auto" raised>
+                <v-card-title>
+                  {{ supplier.name }}
+                </v-card-title>
+                <v-card-subtitle>
+                  {{ supplier.description }}
+                </v-card-subtitle>
+                <v-card-actions>
+                  <v-btn text>
+                    View
+                  </v-btn>
+                  <v-btn color="primary" depressed @click="editSupplier(supplier)">
+                    Edit
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+          </v-row>
         </div>
       </div>
     </div>
-  </div>
+    <v-dialog v-model="showDialog" max-width="600" scrollable persistent>
+      <v-card>
+        <v-card-title class="headline" primary-title>
+          Supplier
+        </v-card-title>
+        <v-card-text style="max-height: 600px;">
+          <form novalidate>
+            <v-text-field label="Name" filled v-model="supplierObject.name"></v-text-field>
+            <v-textarea label="Description" filled
+              v-model="supplierObject.description"></v-textarea>
+            <v-textarea label="Address" filled
+              v-model="supplierObject.address"></v-textarea>
+            <v-row>
+              <v-col cols="12" sm="6">
+                <v-text-field label="Email" filled
+                  v-model="supplierObject.contactEmail"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-text-field label="Contact Number" filled
+                  v-model="supplierObject.contactNumber"></v-text-field>
+              </v-col>
+            </v-row>
+            <v-textarea label="Other Notes" filled
+              v-model="supplierObject.notes"></v-textarea>
+          </form>
+        </v-card-text>
+        <v-card-actions class="card-action-padding">
+          <v-btn text @click="closeDialog()">Close</v-btn>
+          <v-btn color="primary" depressed width="120" @click="saveSupplier()">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -117,8 +98,8 @@ export default class DashboardSuppliers extends Vue {
 
   created() {
     this.currentUser = this.$store.state.currentUser;
-    this.supplierObject = this.initAddNewSupplier();
     if (this.currentUser) {
+      this.supplierObject = this.initAddNewSupplier();
       this.$bind('suppliers', db.collection('suppliers').where('storeId', '==', this.currentUser.storeId));
     } else {
       this.suppliers = [];
@@ -145,6 +126,12 @@ export default class DashboardSuppliers extends Vue {
     this.showDialog = true;
     this.readOnlyDialog = false;
     this.dialogMode = 'add';
+  }
+
+  closeDialog(): void {
+    this.showDialog = false;
+    this.dialogMode = '';
+    this.supplierObject = this.initAddNewSupplier();
   }
 
   saveSupplier(): void {

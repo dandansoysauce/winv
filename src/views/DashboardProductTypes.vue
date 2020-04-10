@@ -104,8 +104,8 @@ export default class DashboardProductTypes extends Vue {
 
   created() {
     this.currentUser = this.$store.state.currentUser;
-    this.productTypeObject = this.initProductTypeObject();
     if (this.currentUser) {
+      this.productTypeObject = this.initProductTypeObject();
       this.$bind('productTypes', db.collection('producttypes').where('storeId', '==', this.currentUser.storeId));
     } else {
       this.productTypes = [];

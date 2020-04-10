@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" app clipped width="350">
+    <v-navigation-drawer v-model="drawer" fixed app clipped width="350">
       <v-list>
         <v-list-item link to="/dashboard/home">
           <v-list-item-action>
@@ -63,7 +63,7 @@
     </v-navigation-drawer>
 
     <v-app-bar app clipped-left>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
       <v-toolbar-title>{{ userStore.storeName }}</v-toolbar-title>
     </v-app-bar>
 
