@@ -3,4 +3,5 @@ export default interface ProductPropertyType {
   name: string;
   propertyType: string;
   value?: unknown;
+  menu: boolean;
 }

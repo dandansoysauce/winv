@@ -1,10 +1,10 @@
 <template>
   <v-container class="fill-height align-start">
     <div class="d-flex flex-column fill-height width-100">
-      <h1>Product Types</h1>
+      <h1>Product Categories</h1>
       <div class="d-flex flex-column fill-height">
         <div class="d-flex mt-2">
-          <v-btn raised color="primary" @click="showDialogAsAdd()">Add Product Type</v-btn>
+          <v-btn raised color="primary" @click="showDialogAsAdd()">Add a Category</v-btn>
         </div>
         <div class="fill-height mt-4">
           <v-row>
@@ -34,7 +34,7 @@
     <v-dialog v-model="showDialog" max-width="600" scrollable persistent>
       <v-card>
         <v-card-title class="headline" primary-title>
-          Product Type
+          Product Category
         </v-card-title>
         <v-card-text style="max-height: 600px;">
           <form novalidate>
@@ -55,7 +55,7 @@
               <v-col cols="12" sm="6">
                 <v-select
                   v-model="pr.propertyType"
-                  :items="['Text', 'Number', 'Datetime', 'Checkbox']"
+                  :items="['Text', 'Number', 'Date', 'Time', 'Checkbox']"
                   label="Type"
                   filled
                   required
@@ -178,6 +178,7 @@ export default class DashboardProductTypes extends Vue {
       id: uniqid(),
       name: '',
       propertyType: 'text',
+      menu: false,
     };
   }
 }

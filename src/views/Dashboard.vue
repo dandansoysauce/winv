@@ -39,7 +39,7 @@
             <v-icon>mdi-format-list-bulleted-type</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Product Types</v-list-item-title>
+            <v-list-item-title>Product Categories</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-divider></v-divider>
@@ -64,7 +64,11 @@
 
     <v-app-bar app clipped-left>
       <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
-      <v-toolbar-title>{{ userStore.storeName }}</v-toolbar-title>
+      <v-toolbar-title>{{ getStoreName }}</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon>
+        <v-icon>mdi-dots-vertical</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-content>
@@ -104,6 +108,13 @@ export default class Dashboard extends Vue {
         this.userStore = snapshot.data() as Store;
       });
     }
+  }
+
+  get getStoreName() {
+    if (this.userStore && this.userStore.storeName) {
+      return this.userStore.storeName;
+    }
+    return 'SimpleWonder Inventory';
   }
 
   signoutUser() {

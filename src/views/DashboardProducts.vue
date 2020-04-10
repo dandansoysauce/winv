@@ -1,5 +1,161 @@
 <template>
-  <div class="container flex flex-column">
+  <v-container class="fill-height align-start">
+    <div class="d-flex flex-column fill-height width-100">
+      <h1>Products</h1>
+      <div class="d-flex flex-column fill-height">
+        <div class="d-flex mt-2">
+          <v-btn raised color="primary" @click="showDialogAsAdd()">Add Product</v-btn>
+        </div>
+        <div class="fill-height mt-4">
+          <v-row>
+            <v-col v-for="product in products" :key="product.id"
+              cols="12" sm="4">
+              <v-card class="mx-auto" raised>
+                <v-list-item two-line>
+                  <v-list-item-content>
+                    <v-list-item-title class="headline">{{ product.name }}</v-list-item-title>
+                    <v-list-item-subtitle>
+                      {{ product.description.length > 0 ? product.description
+                        : 'No Description' }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-row align="center">
+                  <v-col cols="6">
+                    <v-list-item>
+                      <v-list-item-icon>
+                        <v-icon>mdi-package-variant-closed</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-subtitle>{{ product.quantity }} pcs</v-list-item-subtitle>
+                    </v-list-item>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-list-item>
+                      <v-list-item-icon>
+                        <v-icon>mdi-cash</v-icon>
+                      </v-list-item-icon>
+                      <v-list-item-subtitle>{{ product.pricePerItem }} ea.</v-list-item-subtitle>
+                    </v-list-item>
+                  </v-col>
+                </v-row>
+                <v-card-actions>
+                  <v-btn text>
+                    View
+                  </v-btn>
+                  <v-btn depressed @click="editProduct(product)">
+                    Edit
+                  </v-btn>
+                  <v-btn color="primary" depressed>
+                    Restock
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+          </v-row>
+        </div>
+      </div>
+    </div>
+    <v-dialog v-model="showDialog" max-width="600" scrollable persistent>
+      <v-card>
+        <v-card-title class="headline" primary-title>
+          Product
+        </v-card-title>
+        <v-card-text style="max-height: 600px;">
+          <form novalidate>
+            <v-text-field label="Name" filled v-model="productObject.name"></v-text-field>
+            <v-textarea label="Description" filled
+              v-model="productObject.description"></v-textarea>
+            <v-select :items="productTypes" v-model="productObject.productTypeId"
+              item-text="name" item-value="id" filled
+              label="Category" @input="productTypeChange()"
+            ></v-select>
+            <v-row>
+              <v-col cols="12" sm="6">
+                <v-text-field label="Product Code" filled
+                  append-icon="mdi-text-box-plus-outline"
+                  @click:append="generateRandomCode()"
+                  v-model="productObject.productCode"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                 <v-select :items="suppliers" v-model="productObject.suppliedBy"
+                    item-text="name" item-value="id" filled
+                    label="Supplied By" @input="productTypeChange()"
+                  ></v-select>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" sm="6">
+                <v-text-field label="Price Per Item" filled
+                  v-model="productObject.pricePerItem" type="number"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                 <v-text-field label="Quantity" filled
+                  v-model="productObject.quantity" type="number"></v-text-field>
+              </v-col>
+            </v-row>
+            <div class="d-flex">
+              <h4>Custom Properties</h4>
+            </div>
+            <v-row v-for="pr in productObject.properties" :key="pr.id">
+              <v-col cols="12">
+                <v-text-field :label="pr.name" filled v-model="pr.value" type="text"
+                  v-if="pr.propertyType === 'Text'"></v-text-field>
+                <v-text-field :label="pr.name" filled v-model="pr.value" type="number"
+                  v-if="pr.propertyType === 'Number'"></v-text-field>
+                <v-menu
+                  v-model="pr.menu"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                  v-if="pr.propertyType === 'Date'"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      v-model="pr.value"
+                      :label="pr.name"
+                      readonly
+                      v-on="on"
+                      filled
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="pr.value" @input="pr.menu = false"></v-date-picker>
+                </v-menu>
+                <v-menu
+                  v-model="pr.menu"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                  v-if="pr.propertyType === 'Time'"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      v-model="pr.value"
+                      :label="pr.name"
+                      readonly
+                      v-on="on"
+                      filled
+                    ></v-text-field>
+                  </template>
+                  <v-time-picker v-model="pr.value" @input="pr.menu = false"></v-time-picker>
+                </v-menu>
+                <v-checkbox v-model="pr.value" :label="pr.name"
+                  v-if="pr.propertyType === 'Checkbox'"></v-checkbox>
+              </v-col>
+            </v-row>
+          </form>
+        </v-card-text>
+        <v-card-actions class="card-action-padding">
+          <v-btn text @click="closeDialog()">Close</v-btn>
+          <v-btn color="primary" depressed width="120" @click="saveProduct()">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
+  <!-- <div class="container flex flex-column">
     <md-dialog :md-active.sync="showDialog" class="dialog-size">
       <md-dialog-title>Product</md-dialog-title>
       <md-dialog-content class="md-scrollbar">
@@ -140,7 +296,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script lang="ts">
@@ -188,11 +344,12 @@ export default class DashboardProducts extends Vue {
 
   created() {
     this.currentUser = this.$store.state.currentUser;
-    this.productObject = this.initProductObject();
     if (this.currentUser) {
       this.$bind('productTypes', db.collection('producttypes').where('storeId', '==', this.currentUser.storeId));
       this.$bind('suppliers', db.collection('suppliers').where('storeId', '==', this.currentUser.storeId));
       this.$bind('products', db.collection('products').where('storeId', '==', this.currentUser.storeId));
+
+      this.productObject = this.initProductObject();
     } else {
       this.productTypes = [];
       this.suppliers = [];
@@ -204,6 +361,12 @@ export default class DashboardProducts extends Vue {
     this.showDialog = true;
     this.readOnlyDialog = false;
     this.dialogMode = 'add';
+  }
+
+  closeDialog(): void {
+    this.showDialog = false;
+    this.dialogMode = '';
+    this.productObject = this.initProductObject();
   }
 
   enableDisable(product: Product): void {
