@@ -1,65 +1,26 @@
 <template>
-  <div class="container flex flex-1 flex-column">
-    <md-dialog :md-active.sync="showDialog" class="dialog-size">
-      <md-dialog-title>Add New Product Type</md-dialog-title>
-      <md-dialog-content>
-        <form novalidate class="md-layout">
-          <div class="md-layout">
-            <md-autocomplete v-model="selectedLabel"
-              :md-options="sanitizedProducts">
-              <label>Product</label>
-              <template slot="md-autocomplete-item" slot-scope="{ item, term }">
-                <md-highlight-text :md-term="term">{{ item }}</md-highlight-text>
-              </template>
-            </md-autocomplete>
-            <md-field>
-              <label>Notes</label>
-              <md-textarea v-model="saleObject.description"></md-textarea>
-            </md-field>
-            <div class="md-layout">
-              <div class="md-layout-item md-size-15">
-                <h5>Properties</h5>
-              </div>
-              <div class="md-layout-item text-align-right">
-                <md-button class="md-fab md-accent">
-                  <md-icon>add</md-icon>
-                </md-button>
-              </div>
-            </div>
-          </div>
-        </form>
-      </md-dialog-content>
-      <md-dialog-actions>
-        <md-button @click="showDialog = false">Close</md-button>
-        <md-button class="md-raised md-primary" @click="showDialog = false">Save</md-button>
-      </md-dialog-actions>
-    </md-dialog>
-    <h1>Sales</h1>
-    <div class="md-layout flex-1">
-      <div class="md-layout-item md-size-100">
-        <div class="md-layout flex-column">
-          <div class="md-layout-item">
-            <div class="flex-row">
-              <md-button class="md-raised md-accent add-button-margin margin-0"
-                @click="showDialogAsAdd()">Add Sale</md-button>
-              <!-- <md-button class="md-raised md-primary add-button-margin margin-0 margin-left-16"
-                @click="showDialogAsAdd()">Bulk</md-button> -->
-            </div>
-          </div>
-          <div class="md-layout-item margin-top-16">
-            <div class="md-layout">
-              <md-tabs class="flex-1">
-                <md-tab id="tab-home" md-label="Overview" md-icon="home"></md-tab>
-                <md-tab id="tab-reports" md-label="Reports" md-icon="bar_chart"></md-tab>
-                <md-tab id="tab-table" md-label="Tabular"
-                  md-icon="table_chart"></md-tab>
-              </md-tabs>
-            </div>
-          </div>
+  <v-container class="fill-height align-start">
+    <div class="d-flex flex-column fill-height width-100">
+      <h1>Sales</h1>
+      <div class="d-flex flex-column fill-height">
+        <div class="d-flex mt-2">
+          <v-btn raised color="primary" @click="showDialogAsAdd()">New Sale</v-btn>
+        </div>
+        <div class="fill-height mt-4">
+          <v-tabs fixed-tabs icons-and-text>
+            <v-tab>
+              Overview
+              <v-icon>mdi-home</v-icon>
+            </v-tab>
+            <v-tab>
+              Tabular Report
+              <v-icon>mdi-table</v-icon>
+            </v-tab>
+          </v-tabs>
         </div>
       </div>
     </div>
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts">
