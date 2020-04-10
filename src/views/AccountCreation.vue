@@ -1,5 +1,70 @@
 <template>
-  <div class="md-layout full-height md-alignment-center-center">
+  <v-container class="fill-height" fluid>
+    <v-row align="center" justify="center">
+      <v-col>
+        <v-card class="mx-auto" max-width="600" raised dark>
+          <v-list-item two-line>
+            <v-list-item-content>
+              <div class="overline mb-4">SimpleWonder Inventory</div>
+              <v-list-item-title class="headline mb-1">Sign Up</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-card-text>
+            <form novalidate autocomplete="off">
+              <v-stepper v-model="active">
+                <v-stepper-header>
+                  <v-stepper-step :complete="active > 1" step="1">
+                    Basic Information
+                    <small>About You</small>
+                  </v-stepper-step>
+                  <v-stepper-step step="2">
+                    Store Information
+                    <small>Store/Company</small>
+                  </v-stepper-step>
+                </v-stepper-header>
+
+                <v-stepper-items>
+                  <v-stepper-content step="1">
+                    <v-text-field label="Name" filled v-model="userObject.name"
+                      prepend-icon="mdi-textbox"></v-text-field>
+                    <v-text-field label="Email" filled v-model="userObject.email"
+                      prepend-icon="mdi-at"></v-text-field>
+                    <v-text-field label="Phone Number" filled
+                      v-model="userObject.phoneNumber" prepend-icon="mdi-cellphone"></v-text-field>
+                    <v-text-field label="Password" filled
+                      v-model="userObject.password"
+                      prepend-icon="mdi-textbox-password"></v-text-field>
+                    <v-text-field label="Confirm Password" filled
+                      v-model="confirmPassword"
+                      prepend-icon="mdi-textbox-password"></v-text-field>
+
+                    <v-btn depressed to="/" class="mr-2">Cancel</v-btn>
+                    <v-btn depressed color="primary" @click="continueStep(2)"
+                      width="160">Continue</v-btn>
+                  </v-stepper-content>
+
+                  <v-stepper-content step="2">
+                    <v-text-field label="Name" filled
+                      v-model="storeObject.storeName"
+                      prepend-icon="mdi-textbox"></v-text-field>
+                    <v-textarea label="Address" filled
+                      v-model="storeObject.storeAddress"
+                      prepend-icon="mdi-map-marker"></v-textarea>
+
+                    <v-btn depressed @click="continueStep(1)" class="mr-2">Back</v-btn>
+                    <v-btn depressed color="primary" @click="registerAccount()"
+                      width="160">Register</v-btn>
+                  </v-stepper-content>
+                </v-stepper-items>
+              </v-stepper>
+            </form>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+  <!-- <div class="md-layout full-height md-alignment-center-center">
     <div class="md-layout-item md-small-size-100 md-medium-size-75 md-size-45">
       <form novalidate class="md-layout">
         <md-card class="card-width">
@@ -52,7 +117,7 @@
         </md-card>
       </form>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script lang="ts">
@@ -65,11 +130,7 @@ import uniqid from 'uniqid';
 
 @Component
 export default class AccountCreation extends Vue {
-  active: string;
-
-  basicInfo: boolean;
-
-  storeInfo: boolean;
+  active: number;
 
   userObject: User;
 
@@ -81,9 +142,7 @@ export default class AccountCreation extends Vue {
 
   constructor() {
     super();
-    this.active = 'basicInfo';
-    this.basicInfo = false;
-    this.storeInfo = false;
+    this.active = 1;
     this.userObject = {
       name: '',
       email: '',
@@ -106,9 +165,8 @@ export default class AccountCreation extends Vue {
     console.log(this.$route.params.inviteCode);
   }
 
-  continueStep() {
-    this.basicInfo = true;
-    this.active = 'storeInfo';
+  continueStep(step: number) {
+    this.active = step;
   }
 
   registerAccount() {
