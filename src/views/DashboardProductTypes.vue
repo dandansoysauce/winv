@@ -1,104 +1,76 @@
 <template>
-  <div class="container flex flex-column">
-    <md-dialog :md-active.sync="showDialog" class="dialog-size">
-      <md-dialog-title>Product Type</md-dialog-title>
-      <md-dialog-content class="md-scrollbar">
-        <form novalidate class="md-layout">
-          <div class="md-layout">
-            <md-field>
-              <label>Name</label>
-              <md-input v-model="productTypeObject.name" :readonly="readOnlyDialog"></md-input>
-            </md-field>
-            <md-field>
-              <label>Description</label>
-              <md-textarea v-model="productTypeObject.description"
-                :readonly="readOnlyDialog"></md-textarea>
-            </md-field>
-            <div class="md-layout flex-column">
-              <div class="md-layout">
-                <div class="md-layout-item md-size-25">
-                  <h5>Custom Properties</h5>
-                </div>
-                <div class="md-layout-item text-align-right">
-                  <md-button class="md-fab md-accent" @click="addProperty()"
-                    :disabled="readOnlyDialog">
-                    <md-icon>add</md-icon>
-                  </md-button>
-                </div>
-              </div>
-              <div v-for="pr in productTypeObject.properties" :key="pr.id"
-                class="md-layout md-alignment-center-left">
-                <div class="md-layout-item md-size-55 padding-right-16">
-                  <md-field>
-                    <label>Name</label>
-                    <md-input v-model="pr.name" :readonly="readOnlyDialog"></md-input>
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-size-35">
-                  <md-field>
-                    <label>Type</label>
-                    <md-select v-model="pr.propertyType" :readonly="readOnlyDialog">
-                      <md-option value="text">Text</md-option>
-                      <md-option value="number">Number</md-option>
-                      <md-option value="date">Date</md-option>
-                      <md-option value="bool">Checkbox</md-option>
-                    </md-select>
-                  </md-field>
-                </div>
-                <div class="md-layout-item md-size-10">
-                  <md-button class="md-icon-button md-dense md-primary" :disabled="readOnlyDialog">
-                    <md-icon>close</md-icon>
-                  </md-button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-      </md-dialog-content>
-      <md-dialog-actions>
-        <md-button @click="showDialog = false">Close</md-button>
-        <md-button class="md-raised md-primary dialog-save-button"
-          @click="saveProductType()" :disabled="readOnlyDialog">Save</md-button>
-      </md-dialog-actions>
-    </md-dialog>
-    <h1>Product Types</h1>
-    <div class="md-layout flex-1">
-      <div class="md-layout-item md-size-100">
-        <div class="md-layout flex-column">
-          <div class="md-layout-item">
-            <md-button class="md-raised md-accent margin-0"
-              @click="showDialogAsAdd()">Add Product Type</md-button>
-          </div>
-          <div class="md-layout-item margin-top-16">
-            <div class="md-layout">
-              <masonry class="flex-1" :cols="3" :gutter="16">
-                <md-card class="margin-0" v-for="productType in productTypes" :key="productType.id">
-                  <md-card-header>
-                    <div class="md-title">
-                      {{ productType.name }}
-                      <span class="float-right">
-                        <md-switch class="margin-0" v-model="productType.enabled"
-                          @change="enableDisable(productType)"></md-switch>
-                      </span>
-                    </div>
-                  </md-card-header>
-
-                  <md-card-content>
-                    {{ productType.description }}
-                  </md-card-content>
-
-                  <md-card-actions>
-                    <md-button @click="editProductType(productType)">Edit</md-button>
-                    <md-button @click="viewProductType(productType)">View</md-button>
-                  </md-card-actions>
-                </md-card>
-              </masonry>
-            </div>
-          </div>
+  <v-container class="fill-height align-start">
+    <div class="d-flex flex-column fill-height width-100">
+      <h1>Product Types</h1>
+      <div class="d-flex flex-column fill-height">
+        <div class="d-flex mt-2">
+          <v-btn raised color="primary" @click="showDialogAsAdd()">Add Product Type</v-btn>
+        </div>
+        <div class="fill-height mt-4">
+          <v-row>
+            <v-col v-for="productType in productTypes" :key="productType.id"
+              cols="12" sm="4">
+              <v-card class="mx-auto" raised>
+                <v-card-title>
+                  {{ productType.name }}
+                </v-card-title>
+                <v-card-subtitle>
+                  {{ productType.description }}
+                </v-card-subtitle>
+                <v-card-actions>
+                  <v-btn text>
+                    View
+                  </v-btn>
+                  <v-btn color="primary" depressed @click="editProductType(productType)">
+                    Edit
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+          </v-row>
         </div>
       </div>
     </div>
-  </div>
+    <v-dialog v-model="showDialog" max-width="600" scrollable persistent>
+      <v-card>
+        <v-card-title class="headline" primary-title>
+          Product Type
+        </v-card-title>
+        <v-card-text style="max-height: 600px;">
+          <form novalidate>
+            <v-text-field label="Name" filled v-model="productTypeObject.name"></v-text-field>
+            <v-textarea label="Description" filled
+              v-model="productTypeObject.description"></v-textarea>
+            <div class="d-flex">
+              <h4>Custom Properties</h4>
+              <v-spacer></v-spacer>
+              <v-btn class="mx-2" fab small color="primary" @click="addProperty()">
+                <v-icon dark>mdi-plus</v-icon>
+              </v-btn>
+            </div>
+            <v-row v-for="pr in productTypeObject.properties" :key="pr.id">
+              <v-col cols="12" sm="6">
+                <v-text-field label="Name" filled v-model="pr.name"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-select
+                  v-model="pr.propertyType"
+                  :items="['Text', 'Number', 'Datetime', 'Checkbox']"
+                  label="Type"
+                  filled
+                  required
+                ></v-select>
+              </v-col>
+            </v-row>
+          </form>
+        </v-card-text>
+        <v-card-actions class="card-action-padding">
+          <v-btn text @click="closeDialog()">Close</v-btn>
+          <v-btn color="primary" depressed width="120" @click="saveProductType()">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -115,8 +87,6 @@ export default class DashboardProductTypes extends Vue {
 
   dialogMode: string;
 
-  readOnlyDialog: boolean;
-
   productTypeObject: ProductType;
 
   productTypes: ProductType[];
@@ -127,7 +97,6 @@ export default class DashboardProductTypes extends Vue {
     super();
     this.showDialog = false;
     this.dialogMode = '';
-    this.readOnlyDialog = false;
     this.productTypes = Array<ProductType>();
     this.productTypeObject = {} as ProductType;
     this.currentUser = {} as User;
@@ -145,20 +114,23 @@ export default class DashboardProductTypes extends Vue {
 
   showDialogAsAdd(): void {
     this.showDialog = true;
-    this.readOnlyDialog = false;
     this.dialogMode = 'add';
+  }
+
+  closeDialog(): void {
+    this.showDialog = false;
+    this.dialogMode = '';
+    this.productTypeObject = this.initProductTypeObject();
   }
 
   editProductType(productType: ProductType): void {
     this.showDialog = true;
-    this.readOnlyDialog = false;
     this.dialogMode = 'edit';
     this.productTypeObject = productType;
   }
 
   viewProductType(productType: ProductType): void {
     this.showDialog = true;
-    this.readOnlyDialog = true;
     this.productTypeObject = productType;
   }
 

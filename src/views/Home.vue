@@ -2,7 +2,7 @@
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
       <v-col>
-        <v-card class="mx-auto" max-width="600" raised dark>
+        <v-card class="mx-auto" max-width="600" raised>
           <v-list-item two-line>
             <v-list-item-content>
               <div class="overline mb-4">SimpleWonder Inventory</div>
@@ -19,7 +19,7 @@
             </form>
           </v-card-text>
 
-          <v-card-actions class="login-action-padding">
+          <v-card-actions class="card-action-padding">
             <v-btn depressed to="/accountcreation">Sign Up</v-btn>
             <v-btn depressed color="primary" @click="loginUser()" width="160">Enter</v-btn>
           </v-card-actions>
@@ -61,12 +61,3 @@ export default class Home extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.login-action-padding {
-  padding-top: 8px;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-bottom: 16px;
-}
-</style>

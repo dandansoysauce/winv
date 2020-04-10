@@ -20,6 +20,13 @@ html, body {
   color: #2c3e50;
 }
 
+.card-action-padding {
+  padding-top: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 16px;
+}
+
 .flex {
   display: flex;
 }
