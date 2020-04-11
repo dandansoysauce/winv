@@ -21,7 +21,7 @@
       </v-btn-toggle>
     </v-card-text>
     <v-card-title class="display-3">
-      {{ numberOfSales }}
+      {{ getCalculatedSales }}
     </v-card-title>
     <v-card-subtitle>
       # of Sales
@@ -30,8 +30,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
-import { format } from 'date-fns';
+import {
+  Component, Vue, Prop,
+} from 'vue-property-decorator';
+import { isToday } from 'date-fns';
 import User from '@/interfaces/User';
 import Sale from '@/interfaces/Sale';
 
@@ -58,18 +60,16 @@ export default class TotalSalesCard extends Vue {
     this.calculateNumberOfSales();
   }
 
+  get getCalculatedSales() {
+    return this.calculateNumberOfSales();
+  }
+
   calculateNumberOfSales() {
     if (this.salesView === 'today') {
-      const dateToday = new Date().toLocaleDateString();
-      const getTime = new Date(dateToday);
-      console.log(getTime.getTime());
-      const getNumberOfSalesToday = this.sales.map((x) => {
-        console.log(x.dateSale);
-        const formatDate = new Date(x.dateSale).getTime();
-        console.log(formatDate);
-        return formatDate;
-      });
+      return this.sales.filter((x) => isToday(x.dateSale.toDate())).length;
     }
+
+    return 0;
   }
 }
 </script>

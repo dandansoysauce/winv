@@ -7,6 +7,7 @@
 <style lang="scss">
 html, body {
   height: 100vh;
+  overflow: hidden;
 }
 
 .full-height {

@@ -23,6 +23,7 @@
                 <v-col cols="8" xs="12"></v-col>
                 <v-col cols="4" xs="12">
                   <TotalSalesCard :sales="sales"></TotalSalesCard>
+                  <RecentSalesCard class="mt-4" :sales="sales"></RecentSalesCard>
                 </v-col>
               </v-row>
             </v-tab-item>
@@ -69,16 +70,18 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { format } from 'date-fns';
 import { db } from '@/main';
+import * as firebase from 'firebase/app';
 import Sale from '@/interfaces/Sale';
 import Product from '@/interfaces/Product';
 import User from '@/interfaces/User';
 import TotalSalesCard from '@/components/TotalSalesCard.vue';
+import RecentSalesCard from '@/components/RecentSalesCard.vue';
 
 @Component({
   components: {
     TotalSalesCard,
+    RecentSalesCard,
   },
 })
 export default class DashboardSales extends Vue {
@@ -134,12 +137,13 @@ export default class DashboardSales extends Vue {
   initSaleObject(): Sale {
     return {
       productId: '',
+      productName: '',
       quantity: 0,
       totalSale: 0,
-      dateSale: '',
+      dateSale: firebase.firestore.Timestamp.fromDate(new Date()),
       name: '',
-      modifiedAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
-      createdAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
+      modifiedAt: firebase.firestore.Timestamp.fromDate(new Date()),
+      createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
       modifiedBy: this.currentUser.id ?? '',
       enabled: true,
       storeId: this.currentUser.storeId,
@@ -151,6 +155,7 @@ export default class DashboardSales extends Vue {
   productSelected() {
     if (this.saleObject.productId.length > 0) {
       [this.selectedProduct] = this.products.filter((x) => x.id === this.saleObject.productId);
+      this.saleObject.productName = this.selectedProduct.name;
     }
   }
 
@@ -162,11 +167,11 @@ export default class DashboardSales extends Vue {
 
   saveSale() {
     this.showDialog = false;
-    this.saleObject.modifiedAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
+    this.saleObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
 
     if (this.dialogMode === 'add') {
-      this.saleObject.createdAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
-      this.saleObject.dateSale = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
+      this.saleObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
+      this.saleObject.dateSale = firebase.firestore.Timestamp.fromDate(new Date());
       db.collection('sales').add(this.saleObject).then(() => {
         db.collection('products').doc(this.saleObject.productId).get().then((snap) => {
           const getProduct = snap.data() as Product;
@@ -201,9 +206,3 @@ export default class DashboardSales extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-// .tabs-container >>> .v-window__container {
-//   width: 100%;
-// }
-</style>

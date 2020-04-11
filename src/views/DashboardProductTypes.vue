@@ -75,8 +75,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { format } from 'date-fns';
 import { db } from '@/main';
+import * as firebase from 'firebase/app';
 import ProductType from '@/interfaces/ProductType';
 import ProductPropertyType from '@/interfaces/ProductPropertyType';
 import User from '@/interfaces/User';
@@ -142,10 +142,10 @@ export default class DashboardProductTypes extends Vue {
 
   saveProductType(): void {
     this.showDialog = false;
-    this.productTypeObject.modifiedAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
+    this.productTypeObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
 
     if (this.dialogMode === 'add') {
-      this.productTypeObject.createdAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
+      this.productTypeObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
       db.collection('producttypes').add(this.productTypeObject).then(() => {
         this.productTypeObject = this.initProductTypeObject();
       });
@@ -166,8 +166,8 @@ export default class DashboardProductTypes extends Vue {
       properties: [],
       name: '',
       description: '',
-      modifiedAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
-      createdAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
+      modifiedAt: firebase.firestore.Timestamp.fromDate(new Date()),
+      createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
       modifiedBy: this.currentUser.id ?? '',
       enabled: true,
       storeId: this.currentUser.storeId,

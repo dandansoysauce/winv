@@ -1,3 +1,5 @@
+import * as firebase from 'firebase/app';
+
 export default interface User {
   id?: string;
   storeId?: string;
@@ -6,6 +8,6 @@ export default interface User {
   phoneNumber: string;
   emailVerified: boolean;
   password?: string;
-  createdAt: string;
-  modifiedAt: string;
+  createdAt: firebase.firestore.Timestamp;
+  modifiedAt: firebase.firestore.Timestamp;
 }

@@ -68,8 +68,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { format } from 'date-fns';
 import { db } from '@/main';
+import * as firebase from 'firebase/app';
 import Supplier from '@/interfaces/Supplier';
 import User from '@/interfaces/User';
 
@@ -112,8 +112,8 @@ export default class DashboardSuppliers extends Vue {
       notes: '',
       name: '',
       description: '',
-      modifiedAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
-      createdAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
+      modifiedAt: firebase.firestore.Timestamp.fromDate(new Date()),
+      createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
       modifiedBy: this.currentUser.id ?? '',
       enabled: true,
       storeId: this.currentUser.storeId,
@@ -133,10 +133,10 @@ export default class DashboardSuppliers extends Vue {
 
   saveSupplier(): void {
     this.showDialog = false;
-    this.supplierObject.modifiedAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
+    this.supplierObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
 
     if (this.dialogMode === 'add') {
-      this.supplierObject.createdAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
+      this.supplierObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
       db.collection('suppliers').add(this.supplierObject).then(() => {
         this.supplierObject = this.initAddNewSupplier();
       });

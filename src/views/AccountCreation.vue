@@ -94,15 +94,15 @@ export default class AccountCreation extends Vue {
       email: '',
       password: '',
       phoneNumber: '',
-      createdAt: new Date(),
-      modifiedAt: new Date(),
+      createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
+      modifiedAt: firebase.firestore.Timestamp.fromDate(new Date()),
       emailVerified: false,
     };
     this.storeObject = {
       storeName: '',
       storeAddress: '',
-      createdAt: new Date(),
-      modifiedAt: new Date(),
+      createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
+      modifiedAt: firebase.firestore.Timestamp.fromDate(new Date()),
     };
     this.confirmPassword = '';
   }
@@ -118,14 +118,14 @@ export default class AccountCreation extends Vue {
   registerAccount() {
     firebase.auth().createUserWithEmailAndPassword(this.userObject.email, this.userObject.password ?? '')
       .then((data) => {
-        this.storeObject.createdAt = new Date();
-        this.storeObject.modifiedAt = new Date();
+        this.storeObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
+        this.storeObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
         this.storeObject.inviteCode = uniqid();
         db.collection('stores').add(this.storeObject).then((res) => {
           delete this.userObject.password;
           this.userObject.id = data?.user?.uid;
-          this.userObject.createdAt = new Date();
-          this.userObject.modifiedAt = new Date();
+          this.userObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
+          this.userObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
           this.userObject.storeId = res.id;
           this.userObject.emailVerified = data?.user?.emailVerified ?? false;
           db.collection('users').doc(this.userObject.id).set(this.userObject).then(() => {
