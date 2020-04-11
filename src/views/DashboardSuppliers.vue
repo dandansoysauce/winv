@@ -78,8 +78,6 @@ export default class DashboardSuppliers extends Vue {
 
   dialogMode: string;
 
-  readOnlyDialog: boolean;
-
   supplierObject: Supplier;
 
   suppliers: Supplier[];
@@ -90,7 +88,6 @@ export default class DashboardSuppliers extends Vue {
     super();
     this.showDialog = false;
     this.dialogMode = '';
-    this.readOnlyDialog = false;
     this.suppliers = Array<Supplier>();
     this.currentUser = {} as User;
     this.supplierObject = {} as Supplier;
@@ -124,7 +121,6 @@ export default class DashboardSuppliers extends Vue {
 
   showDialogAsAdd(): void {
     this.showDialog = true;
-    this.readOnlyDialog = false;
     this.dialogMode = 'add';
   }
 
@@ -152,7 +148,6 @@ export default class DashboardSuppliers extends Vue {
 
   editSupplier(supplier: Supplier): void {
     this.showDialog = true;
-    this.readOnlyDialog = false;
     this.dialogMode = 'edit';
     this.supplierObject = supplier;
   }
@@ -164,7 +159,6 @@ export default class DashboardSuppliers extends Vue {
 
   viewSupplier(supplier: Supplier): void {
     this.showDialog = true;
-    this.readOnlyDialog = true;
     this.supplierObject = supplier;
   }
 }

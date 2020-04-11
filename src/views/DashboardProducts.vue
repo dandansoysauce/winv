@@ -34,7 +34,7 @@
                       <v-list-item-icon>
                         <v-icon>mdi-cash</v-icon>
                       </v-list-item-icon>
-                      <v-list-item-subtitle>{{ product.pricePerItem }} ea.</v-list-item-subtitle>
+                      <v-list-item-subtitle>{{ product.salePrice }} ea.</v-list-item-subtitle>
                     </v-list-item>
                   </v-col>
                 </v-row>
@@ -69,6 +69,8 @@
               item-text="name" item-value="id" filled
               label="Category" @input="productTypeChange()"
             ></v-select>
+            <v-text-field label="Sale Price" filled
+              v-model="productObject.salePrice" type="number"></v-text-field>
             <v-row>
               <v-col cols="12" sm="6">
                 <v-text-field label="Product Code" filled
@@ -173,8 +175,6 @@ export default class DashboardProducts extends Vue {
 
   dialogMode: string;
 
-  readOnlyDialog: boolean;
-
   suppliers: Supplier[];
 
   productTypes: ProductType[];
@@ -191,7 +191,6 @@ export default class DashboardProducts extends Vue {
     super();
     this.showDialog = false;
     this.dialogMode = '';
-    this.readOnlyDialog = false;
     this.productObjectCustomProperties = [];
     this.productTypes = Array<ProductType>();
     this.suppliers = Array<Supplier>();
@@ -217,7 +216,6 @@ export default class DashboardProducts extends Vue {
 
   showDialogAsAdd(): void {
     this.showDialog = true;
-    this.readOnlyDialog = false;
     this.dialogMode = 'add';
   }
 
@@ -234,14 +232,12 @@ export default class DashboardProducts extends Vue {
 
   editProduct(product: Product): void {
     this.showDialog = true;
-    this.readOnlyDialog = false;
     this.dialogMode = 'edit';
     this.productObject = product;
   }
 
   viewProduct(product: Product): void {
     this.showDialog = true;
-    this.readOnlyDialog = true;
     this.productObject = product;
   }
 
@@ -279,6 +275,7 @@ export default class DashboardProducts extends Vue {
     return {
       productCode: '',
       pricePerItem: 0,
+      salePrice: 0,
       suppliedBy: '',
       quantity: 0,
       productTypeId: 'EvaKvKXKJCUr8TFyBFxc',
