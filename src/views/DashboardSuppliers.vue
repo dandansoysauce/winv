@@ -68,6 +68,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { format } from 'date-fns';
 import { db } from '@/main';
 import Supplier from '@/interfaces/Supplier';
 import User from '@/interfaces/User';
@@ -111,8 +112,8 @@ export default class DashboardSuppliers extends Vue {
       notes: '',
       name: '',
       description: '',
-      modifiedAt: new Date(),
-      createdAt: new Date(),
+      modifiedAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
+      createdAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
       modifiedBy: this.currentUser.id ?? '',
       enabled: true,
       storeId: this.currentUser.storeId,
@@ -132,10 +133,10 @@ export default class DashboardSuppliers extends Vue {
 
   saveSupplier(): void {
     this.showDialog = false;
-    this.supplierObject.modifiedAt = new Date();
+    this.supplierObject.modifiedAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
 
     if (this.dialogMode === 'add') {
-      this.supplierObject.createdAt = new Date();
+      this.supplierObject.createdAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
       db.collection('suppliers').add(this.supplierObject).then(() => {
         this.supplierObject = this.initAddNewSupplier();
       });

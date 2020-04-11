@@ -161,6 +161,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { format } from 'date-fns';
 import { db } from '@/main';
 import uniqid from 'uniqid';
 import Product from '@/interfaces/Product';
@@ -243,10 +244,10 @@ export default class DashboardProducts extends Vue {
 
   saveProduct(): void {
     this.showDialog = false;
-    this.productObject.modifiedAt = new Date();
+    this.productObject.modifiedAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
 
     if (this.dialogMode === 'add') {
-      this.productObject.createdAt = new Date();
+      this.productObject.createdAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
       db.collection('products').add(this.productObject).then(() => {
         this.productObject = this.initProductObject();
       });
@@ -281,8 +282,8 @@ export default class DashboardProducts extends Vue {
       productTypeId: 'EvaKvKXKJCUr8TFyBFxc',
       name: '',
       description: '',
-      modifiedAt: new Date(),
-      createdAt: new Date(),
+      modifiedAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
+      createdAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
       modifiedBy: this.currentUser.id ?? '',
       enabled: true,
       properties: [],

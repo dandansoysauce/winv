@@ -3,8 +3,8 @@ export default interface BaseObject {
   storeId?: string;
   name: string;
   description?: string;
-  modifiedAt: Date;
-  createdAt: Date;
+  modifiedAt: string;
+  createdAt: string;
   modifiedBy: string;
   enabled: boolean;
 }

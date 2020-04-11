@@ -6,17 +6,30 @@
         <div class="d-flex mt-2">
           <v-btn raised color="primary" @click="showDialogAsAdd()">New Sale</v-btn>
         </div>
-        <div class="fill-height mt-4">
-          <v-tabs fixed-tabs icons-and-text>
-            <v-tab>
+        <div class="d-flex flex-column fill-height mt-4">
+          <v-tabs v-model="currentTab" class="flex-grow-0" fixed-tabs icons-and-text>
+            <v-tab href="#overview">
               Overview
               <v-icon>mdi-home</v-icon>
             </v-tab>
-            <v-tab>
+            <v-tab href="#charts">
               Charts
               <v-icon>mdi-chart-bar</v-icon>
             </v-tab>
           </v-tabs>
+          <v-tabs-items v-model="currentTab" class="flex-grow-1">
+            <v-tab-item value="overview" class="fill-height">
+              <v-row class="fill-height">
+                <v-col cols="8" xs="12"></v-col>
+                <v-col cols="4" xs="12">
+                  <TotalSalesCard :sales="sales"></TotalSalesCard>
+                </v-col>
+              </v-row>
+            </v-tab-item>
+            <v-tab-item value="charts">
+              <p>Charts coming soon...</p>
+            </v-tab-item>
+          </v-tabs-items>
         </div>
       </div>
     </div>
@@ -42,26 +55,6 @@
               @input="calculateSale()"></v-text-field>
             <v-text-field label="Total Sale" filled v-model="saleObject.totalSale"
               readonly></v-text-field>
-            <v-menu
-              v-model="dateMenu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  v-model="saleObject.dateSale"
-                  label="Date"
-                  readonly
-                  v-on="on"
-                  filled
-                ></v-text-field>
-              </template>
-              <v-date-picker v-model="saleObject.dateSale"
-                @input="dateMenu = false"></v-date-picker>
-            </v-menu>
             <v-textarea label="Notes" filled v-model="saleObject.description"></v-textarea>
           </form>
         </v-card-text>
@@ -76,12 +69,18 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { format } from 'date-fns';
 import { db } from '@/main';
 import Sale from '@/interfaces/Sale';
 import Product from '@/interfaces/Product';
 import User from '@/interfaces/User';
+import TotalSalesCard from '@/components/TotalSalesCard.vue';
 
-@Component
+@Component({
+  components: {
+    TotalSalesCard,
+  },
+})
 export default class DashboardSales extends Vue {
   showDialog: boolean;
 
@@ -101,7 +100,9 @@ export default class DashboardSales extends Vue {
 
   selectedProduct: Product;
 
-  dateMenu: boolean;
+  currentTab: unknown;
+
+  sales: Sale[];
 
   constructor() {
     super();
@@ -110,20 +111,23 @@ export default class DashboardSales extends Vue {
     this.readOnlyDialog = false;
     this.currentUser = {} as User;
     this.products = Array<Product>();
+    this.sales = Array<Sale>();
     this.selectedProduct = {} as Product;
     this.saleObject = {} as Sale;
     this.searchText = '';
     this.searchLoading = false;
-    this.dateMenu = false;
+    this.currentTab = null;
   }
 
   created() {
     this.currentUser = this.$store.state.currentUser;
     if (this.currentUser) {
       this.$bind('products', db.collection('products').where('storeId', '==', this.currentUser.storeId));
+      this.$bind('sales', db.collection('sales').where('storeId', '==', this.currentUser.storeId));
       this.saleObject = this.initSaleObject();
     } else {
       this.products = [];
+      this.sales = [];
     }
   }
 
@@ -134,8 +138,8 @@ export default class DashboardSales extends Vue {
       totalSale: 0,
       dateSale: '',
       name: '',
-      modifiedAt: new Date(),
-      createdAt: new Date(),
+      modifiedAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
+      createdAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
       modifiedBy: this.currentUser.id ?? '',
       enabled: true,
       storeId: this.currentUser.storeId,
@@ -158,10 +162,11 @@ export default class DashboardSales extends Vue {
 
   saveSale() {
     this.showDialog = false;
-    this.saleObject.modifiedAt = new Date();
+    this.saleObject.modifiedAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
 
     if (this.dialogMode === 'add') {
-      this.saleObject.createdAt = new Date();
+      this.saleObject.createdAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
+      this.saleObject.dateSale = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
       db.collection('sales').add(this.saleObject).then(() => {
         db.collection('products').doc(this.saleObject.productId).get().then((snap) => {
           const getProduct = snap.data() as Product;
@@ -196,3 +201,9 @@ export default class DashboardSales extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+// .tabs-container >>> .v-window__container {
+//   width: 100%;
+// }
+</style>

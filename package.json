@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.4",
+    "date-fns": "^2.12.0",
     "firebase": "7.12.0",
     "uniqid": "^5.2.0",
     "vue": "^2.6.11",

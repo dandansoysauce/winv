@@ -75,6 +75,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { format } from 'date-fns';
 import { db } from '@/main';
 import ProductType from '@/interfaces/ProductType';
 import ProductPropertyType from '@/interfaces/ProductPropertyType';
@@ -141,10 +142,10 @@ export default class DashboardProductTypes extends Vue {
 
   saveProductType(): void {
     this.showDialog = false;
-    this.productTypeObject.modifiedAt = new Date();
+    this.productTypeObject.modifiedAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
 
     if (this.dialogMode === 'add') {
-      this.productTypeObject.createdAt = new Date();
+      this.productTypeObject.createdAt = format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx');
       db.collection('producttypes').add(this.productTypeObject).then(() => {
         this.productTypeObject = this.initProductTypeObject();
       });
@@ -165,8 +166,8 @@ export default class DashboardProductTypes extends Vue {
       properties: [],
       name: '',
       description: '',
-      modifiedAt: new Date(),
-      createdAt: new Date(),
+      modifiedAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
+      createdAt: format(new Date(), 'dd-mm-yyyy kk:mm:ss xxxx'),
       modifiedBy: this.currentUser.id ?? '',
       enabled: true,
       storeId: this.currentUser.storeId,
@@ -179,6 +180,7 @@ export default class DashboardProductTypes extends Vue {
       name: '',
       propertyType: 'text',
       menu: false,
+      value: null,
     };
   }
 }

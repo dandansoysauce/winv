@@ -6,6 +6,6 @@ export default interface User {
   phoneNumber: string;
   emailVerified: boolean;
   password?: string;
-  createdAt: Date;
-  modifiedAt: Date;
+  createdAt: string;
+  modifiedAt: string;
 }

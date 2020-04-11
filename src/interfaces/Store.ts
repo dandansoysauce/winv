@@ -3,6 +3,6 @@ export default interface Store {
   inviteCode?: string;
   storeName: string;
   storeAddress: string;
-  createdAt: Date;
-  modifiedAt: Date;
+  createdAt: string;
+  modifiedAt: string;
 }
