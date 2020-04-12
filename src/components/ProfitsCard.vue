@@ -34,7 +34,7 @@ import {
   Component, Vue, Prop,
 } from 'vue-property-decorator';
 import currency from 'currency.js';
-import { isToday } from 'date-fns';
+import { isToday, isThisWeek, isThisMonth } from 'date-fns';
 import User from '@/interfaces/User';
 import Sale from '@/interfaces/Sale';
 
@@ -63,14 +63,28 @@ export default class ProfitsCard extends Vue {
   }
 
   calculateProfits() {
-    if (this.salesView === 'today') {
-      const todaySale = this.sales.filter((x) => isToday(x.dateSale.toDate()));
-      const profitSum = todaySale.reduce((acc, val) => acc + (
-        val.totalSale - (val.productSupplierPrice * val.quantity)), 0);
-      return currency(profitSum);
+    switch (this.salesView) {
+      case 'today': {
+        const todaySale = this.sales.filter((x) => isToday(x.dateSale.toDate()));
+        const profitSum = todaySale.reduce((acc, val) => acc + (
+          val.totalSale - (val.productSupplierPrice * val.quantity)), 0);
+        return currency(profitSum);
+      }
+      case 'week': {
+        const todaySale = this.sales.filter((x) => isThisWeek(x.dateSale.toDate()));
+        const profitSum = todaySale.reduce((acc, val) => acc + (
+          val.totalSale - (val.productSupplierPrice * val.quantity)), 0);
+        return currency(profitSum);
+      }
+      case 'month': {
+        const todaySale = this.sales.filter((x) => isThisMonth(x.dateSale.toDate()));
+        const profitSum = todaySale.reduce((acc, val) => acc + (
+          val.totalSale - (val.productSupplierPrice * val.quantity)), 0);
+        return currency(profitSum);
+      }
+      default:
+        return 0;
     }
-
-    return 0;
   }
 }
 </script>

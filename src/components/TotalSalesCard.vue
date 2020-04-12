@@ -33,7 +33,7 @@
 import {
   Component, Vue, Prop,
 } from 'vue-property-decorator';
-import { isToday } from 'date-fns';
+import { isToday, isThisWeek, isThisMonth } from 'date-fns';
 import User from '@/interfaces/User';
 import Sale from '@/interfaces/Sale';
 
@@ -65,11 +65,19 @@ export default class TotalSalesCard extends Vue {
   }
 
   calculateNumberOfSales() {
-    if (this.salesView === 'today') {
-      return this.sales.filter((x) => isToday(x.dateSale.toDate())).length;
+    switch (this.salesView) {
+      case 'today': {
+        return this.sales.filter((x) => isToday(x.dateSale.toDate())).length;
+      }
+      case 'week': {
+        return this.sales.filter((x) => isThisWeek(x.dateSale.toDate())).length;
+      }
+      case 'month': {
+        return this.sales.filter((x) => isThisMonth(x.dateSale.toDate())).length;
+      }
+      default:
+        return 0;
     }
-
-    return 0;
   }
 }
 </script>
