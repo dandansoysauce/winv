@@ -69,8 +69,8 @@
               item-text="name" item-value="id" filled
               label="Category" @input="productTypeChange()"
             ></v-select>
-            <v-text-field label="Sale Price" filled
-              v-model="productObject.salePrice" type="number"></v-text-field>
+            <v-currency-field label="Sale Price" filled
+              v-model="productObject.salePrice"></v-currency-field>
             <v-row>
               <v-col cols="12" sm="6">
                 <v-text-field label="Product Code" filled
@@ -87,8 +87,8 @@
             </v-row>
             <v-row>
               <v-col cols="12" sm="6">
-                <v-text-field label="Price Per Item" filled
-                  v-model="productObject.pricePerItem" type="number"></v-text-field>
+                <v-currency-field label="Price Per Item" filled
+                  v-model="productObject.pricePerItem"></v-currency-field>
               </v-col>
               <v-col cols="12" sm="6">
                  <v-text-field label="Quantity" filled

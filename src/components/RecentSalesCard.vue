@@ -11,7 +11,7 @@
           <v-list-item-content>
             <v-list-item-title>{{ sale.productName }}</v-list-item-title>
             <v-list-item-subtitle>
-              Total: {{ sale.totalSale }} | Quantity: {{ sale.quantity }}
+              Total: {{ salesInCurrency(sale.totalSale) }} | Quantity: {{ sale.quantity }}
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
+import currency from 'currency.js';
 import User from '@/interfaces/User';
 import Sale from '@/interfaces/Sale';
 
@@ -43,6 +44,10 @@ export default class RecentSalesCard extends Vue {
 
   get lastTwentySales() {
     return this.sales.slice(0, 20);
+  }
+
+  salesInCurrency(sale) {
+    return currency(sale);
   }
 }
 </script>

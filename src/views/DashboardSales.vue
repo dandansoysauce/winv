@@ -7,7 +7,7 @@
           <v-btn raised color="primary" @click="showDialogAsAdd()">New Sale</v-btn>
         </div>
         <div class="d-flex flex-column fill-height mt-4">
-          <v-tabs v-model="currentTab" class="flex-grow-0" fixed-tabs icons-and-text>
+          <v-tabs v-model="currentTab" class="flex-grow-0" icons-and-text>
             <v-tab href="#overview">
               Overview
               <v-icon>mdi-home</v-icon>
@@ -20,7 +20,21 @@
           <v-tabs-items v-model="currentTab" class="flex-grow-1">
             <v-tab-item value="overview" class="fill-height">
               <v-row class="fill-height">
-                <v-col cols="8" xs="12"></v-col>
+                <v-col class="d-flex flex-column" cols="8" xs="12">
+                  <v-row class="flex-grow-0">
+                    <v-col cols="6">
+                      <SalesCard :sales="sales"></SalesCard>
+                    </v-col>
+                    <v-col cols="6">
+                      <ProfitsCard :sales="sales"></ProfitsCard>
+                    </v-col>
+                  </v-row>
+                  <v-row class="flex-grow-1">
+                    <v-col cols="12">
+                      <ProductsSoldChartCard :sales="sales"></ProductsSoldChartCard>
+                    </v-col>
+                  </v-row>
+                </v-col>
                 <v-col cols="4" xs="12">
                   <TotalSalesCard :sales="sales"></TotalSalesCard>
                   <RecentSalesCard class="mt-4" :sales="sales"></RecentSalesCard>
@@ -53,9 +67,9 @@
               filled
               @input="productSelected()"></v-autocomplete>
             <v-text-field label="Quantity" filled v-model="saleObject.quantity"
-              @input="calculateSale()"></v-text-field>
-            <v-text-field label="Total Sale" filled v-model="saleObject.totalSale"
-              readonly></v-text-field>
+              @input="calculateSale()" type="number" min="0"></v-text-field>
+            <v-currency-field label="Total Sale" filled v-model="saleObject.totalSale"
+              readonly></v-currency-field>
             <v-textarea label="Notes" filled v-model="saleObject.description"></v-textarea>
           </form>
         </v-card-text>
@@ -77,11 +91,17 @@ import Product from '@/interfaces/Product';
 import User from '@/interfaces/User';
 import TotalSalesCard from '@/components/TotalSalesCard.vue';
 import RecentSalesCard from '@/components/RecentSalesCard.vue';
+import SalesCard from '@/components/SalesCard.vue';
+import ProfitsCard from '@/components/ProfitsCard.vue';
+import ProductsSoldChartCard from '@/components/ProductsSoldChartCard.vue';
 
 @Component({
   components: {
     TotalSalesCard,
     RecentSalesCard,
+    SalesCard,
+    ProfitsCard,
+    ProductsSoldChartCard,
   },
 })
 export default class DashboardSales extends Vue {
@@ -138,6 +158,7 @@ export default class DashboardSales extends Vue {
     return {
       productId: '',
       productName: '',
+      productSupplierPrice: 0,
       quantity: 0,
       totalSale: 0,
       dateSale: firebase.firestore.Timestamp.fromDate(new Date()),
@@ -156,6 +177,8 @@ export default class DashboardSales extends Vue {
     if (this.saleObject.productId.length > 0) {
       [this.selectedProduct] = this.products.filter((x) => x.id === this.saleObject.productId);
       this.saleObject.productName = this.selectedProduct.name;
+      this.saleObject.productSupplierPrice = this.selectedProduct.pricePerItem;
+      this.calculateSale();
     }
   }
 

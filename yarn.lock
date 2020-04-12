@@ -3163,6 +3163,11 @@ csso@^4.0.2:
   dependencies:
     css-tree "1.0.0-alpha.37"
 
+currency.js@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/currency.js/-/currency.js-1.2.2.tgz#ae84daf68798051097ad3feb2d022ad08994f526"
+  integrity sha512-trMkXtHpIFq2P+PcSml3La/jpwo8shy2Xn/b5mBXoJhx3E4m3wBbdjS8eHy/DWgYKaEUH8EXPC6yomFx+zumww==
+
 current-script-polyfill@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/current-script-polyfill/-/current-script-polyfill-1.0.0.tgz#f31cf7e4f3e218b0726e738ca92a02d3488ef615"
@@ -9295,6 +9300,11 @@ uuid@^3.0.1, uuid@^3.3.2:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
+
+v-currency-field@^3.0.7:
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/v-currency-field/-/v-currency-field-3.0.7.tgz#18d5b37a4c9659e17a33662d9cabdc378fa4ede5"
+  integrity sha512-fFAv77DxqAeDYkCC5XQYE+gpPTbWoOe5DGGkuCX7yACWGRJ7gsEV0DwkXJKXWgTKLP3ruEHvJhaEJJyFmDlcEw==
 
 v8-compile-cache@^2.0.3:
   version "2.1.0"

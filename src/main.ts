@@ -2,6 +2,7 @@ import Vue from 'vue';
 import vuetify from '@/plugins/vuetify';
 import VueMasonry from 'vue-masonry-css';
 import firebase from 'firebase/app';
+import VCurrencyField from 'v-currency-field';
 import { firestorePlugin } from 'vuefire';
 import App from './App.vue';
 import router from './router';
@@ -21,6 +22,9 @@ export const storage = firebase.storage();
 
 Vue.config.productionTip = false;
 
+Vue.use(VCurrencyField, {
+  min: 0,
+});
 Vue.use(firestorePlugin);
 Vue.use(VueMasonry);
 
