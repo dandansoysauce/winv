@@ -98,7 +98,9 @@ export default class DashboardSuppliers extends Vue {
     this.currentUser = this.$store.state.currentUser;
     if (this.currentUser) {
       this.supplierObject = this.initAddNewSupplier();
-      this.$bind('suppliers', db.collection('suppliers').where('storeId', '==', this.currentUser.storeId));
+      this.$bind('suppliers', db.collection('suppliers')
+        .where('storeId', '==', this.currentUser.storeId)
+        .orderBy('name'));
     } else {
       this.suppliers = [];
     }

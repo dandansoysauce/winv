@@ -92,7 +92,8 @@
               </v-col>
               <v-col cols="12" sm="6">
                  <v-text-field label="Quantity" filled
-                  v-model="productObject.quantity" type="number"></v-text-field>
+                  v-model="productObject.quantity" type="number"
+                  min="1" @focus="$event.target.select()"></v-text-field>
               </v-col>
             </v-row>
             <div class="d-flex">
@@ -203,9 +204,15 @@ export default class DashboardProducts extends Vue {
   created() {
     this.currentUser = this.$store.state.currentUser;
     if (this.currentUser) {
-      this.$bind('productTypes', db.collection('producttypes').where('storeId', '==', this.currentUser.storeId));
-      this.$bind('suppliers', db.collection('suppliers').where('storeId', '==', this.currentUser.storeId));
-      this.$bind('products', db.collection('products').where('storeId', '==', this.currentUser.storeId));
+      this.$bind('productTypes', db.collection('producttypes')
+        .where('storeId', '==', this.currentUser.storeId)
+        .orderBy('name'));
+      this.$bind('suppliers', db.collection('suppliers')
+        .where('storeId', '==', this.currentUser.storeId)
+        .orderBy('name'));
+      this.$bind('products', db.collection('products')
+        .where('storeId', '==', this.currentUser.storeId)
+        .orderBy('name'));
 
       this.productObject = this.initProductObject();
     } else {
@@ -274,11 +281,11 @@ export default class DashboardProducts extends Vue {
 
   initProductObject(): Product {
     return {
-      productCode: '',
+      productCode: uniqid(),
       pricePerItem: 0,
       salePrice: 0,
       suppliedBy: '',
-      quantity: 0,
+      quantity: 1,
       productTypeId: 'EvaKvKXKJCUr8TFyBFxc',
       name: '',
       description: '',

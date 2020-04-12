@@ -67,7 +67,8 @@
               filled
               @input="productSelected()"></v-autocomplete>
             <v-text-field label="Quantity" filled v-model="saleObject.quantity"
-              @input="calculateSale()" type="number" min="0"></v-text-field>
+              @input="calculateSale()" type="number" min="1"
+              @focus="$event.target.select()"></v-text-field>
             <v-currency-field label="Total Sale" filled v-model="saleObject.totalSale"
               readonly></v-currency-field>
             <v-textarea label="Notes" filled v-model="saleObject.description"></v-textarea>
@@ -145,8 +146,12 @@ export default class DashboardSales extends Vue {
   created() {
     this.currentUser = this.$store.state.currentUser;
     if (this.currentUser) {
-      this.$bind('products', db.collection('products').where('storeId', '==', this.currentUser.storeId));
-      this.$bind('sales', db.collection('sales').where('storeId', '==', this.currentUser.storeId));
+      this.$bind('products', db.collection('products')
+        .where('storeId', '==', this.currentUser.storeId)
+        .orderBy('name'));
+      this.$bind('sales', db.collection('sales')
+        .where('storeId', '==', this.currentUser.storeId)
+        .orderBy('name'));
       this.saleObject = this.initSaleObject();
     } else {
       this.products = [];
@@ -159,7 +164,7 @@ export default class DashboardSales extends Vue {
       productId: '',
       productName: '',
       productSupplierPrice: 0,
-      quantity: 0,
+      quantity: 1,
       totalSale: 0,
       dateSale: firebase.firestore.Timestamp.fromDate(new Date()),
       name: '',
