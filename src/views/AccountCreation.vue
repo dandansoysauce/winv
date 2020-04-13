@@ -2,7 +2,7 @@
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
       <v-col>
-        <v-card class="mx-auto" max-width="600" raised dark>
+        <v-card class="mx-auto" max-width="600" raised>
           <v-list-item two-line>
             <v-list-item-content>
               <div class="overline mb-4">SimpleWonder Inventory</div>
@@ -26,18 +26,47 @@
 
                 <v-stepper-items>
                   <v-stepper-content step="1">
-                    <v-text-field label="Name" filled v-model="userObject.name"
-                      prepend-icon="mdi-textbox"></v-text-field>
-                    <v-text-field label="Email" filled v-model="userObject.email"
-                      prepend-icon="mdi-at"></v-text-field>
-                    <v-text-field label="Phone Number" filled
-                      v-model="userObject.phoneNumber" prepend-icon="mdi-cellphone"></v-text-field>
-                    <v-text-field label="Password" filled
-                      v-model="userObject.password"
-                      prepend-icon="mdi-textbox-password"></v-text-field>
-                    <v-text-field label="Confirm Password" filled
-                      v-model="confirmPassword"
-                      prepend-icon="mdi-textbox-password"></v-text-field>
+                    <ValidationObserver ref="basicObserver">
+                      <form novalidate autocomplete="off">
+                        <ValidationProvider v-slot="{ errors }" name="Name" rules="required">
+                          <v-text-field label="Name" filled v-model="userObject.name"
+                            prepend-icon="mdi-textbox"
+                            :error-messages="errors"
+                            required></v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider v-slot="{ errors }" name="Email" rules="required|email">
+                          <v-text-field label="Email" filled v-model="userObject.email"
+                            prepend-icon="mdi-at" :error-messages="errors"
+                            required></v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider v-slot="{ errors }" name="Phone Number"
+                          rules="required">
+                          <v-text-field label="Phone Number" filled
+                            v-model="userObject.phoneNumber"
+                            prepend-icon="mdi-cellphone" :error-messages="errors"
+                            required></v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider v-slot="{ errors }"
+                          name="Password" rules="required|confirmed:confirmation|min:8"
+                          >
+                          <v-text-field label="Password" filled
+                            v-model="userObject.password"
+                            prepend-icon="mdi-textbox-password"
+                            :error-messages="errors"
+                            type="password"
+                            required></v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider v-slot="{ errors }" name="Password Confirmation"
+                          rules="required|min:8" vid="confirmation">
+                          <v-text-field label="Confirm Password" filled
+                            v-model="confirmPassword"
+                            prepend-icon="mdi-textbox-password"
+                            :error-messages="errors"
+                            type="password"
+                            required></v-text-field>
+                        </ValidationProvider>
+                      </form>
+                    </ValidationObserver>
 
                     <v-btn depressed to="/" class="mr-2">Cancel</v-btn>
                     <v-btn depressed color="primary" @click="continueStep(2)"
@@ -45,12 +74,24 @@
                   </v-stepper-content>
 
                   <v-stepper-content step="2">
-                    <v-text-field label="Name" filled
-                      v-model="storeObject.storeName"
-                      prepend-icon="mdi-textbox"></v-text-field>
-                    <v-textarea label="Address" filled
-                      v-model="storeObject.storeAddress"
-                      prepend-icon="mdi-map-marker"></v-textarea>
+                    <ValidationObserver ref="storeObserver">
+                      <form novalidate autocomplete="off">
+                        <ValidationProvider v-slot="{ errors }" name="Name" rules="required">
+                          <v-text-field label="Name" filled
+                            v-model="storeObject.storeName"
+                            prepend-icon="mdi-textbox"
+                            :error-messages="errors"
+                            required></v-text-field>
+                        </ValidationProvider>
+                        <ValidationProvider v-slot="{ errors }" name="Address" rules="required">
+                          <v-textarea label="Address" filled
+                            v-model="storeObject.storeAddress"
+                            prepend-icon="mdi-map-marker"
+                            :error-messages="errors"
+                            required></v-textarea>
+                        </ValidationProvider>
+                      </form>
+                    </ValidationObserver>
 
                     <v-btn depressed @click="continueStep(1)" class="mr-2">Back</v-btn>
                     <v-btn depressed color="primary" @click="registerAccount()"
@@ -73,8 +114,41 @@ import * as firebase from 'firebase/app';
 import User from '@/interfaces/User';
 import Store from '@/interfaces/Store';
 import uniqid from 'uniqid';
+import {
+  required, email, confirmed, min,
+} from 'vee-validate/dist/rules';
+import {
+  extend, ValidationObserver, ValidationProvider, setInteractionMode,
+} from 'vee-validate';
 
-@Component
+setInteractionMode('eager');
+
+extend('required', {
+  ...required,
+  message: '{_field_} is required.',
+});
+
+extend('email', {
+  ...email,
+  message: '{_field_} must be valid.',
+});
+
+extend('confirmed', {
+  ...confirmed,
+  message: '{_field_} does not match.',
+});
+
+extend('min', {
+  ...min,
+  message: '{_field_} may not be less than {length} characters.',
+});
+
+@Component({
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+  },
+})
 export default class AccountCreation extends Vue {
   active: number;
 
@@ -112,31 +186,41 @@ export default class AccountCreation extends Vue {
   }
 
   continueStep(step: number) {
-    this.active = step;
+    (this.$refs.basicObserver as Vue & { validate: () => Promise<boolean> })
+      .validate().then((success) => {
+        if (!success) return;
+
+        this.active = step;
+      });
   }
 
   registerAccount() {
-    firebase.auth().createUserWithEmailAndPassword(this.userObject.email, this.userObject.password ?? '')
-      .then((data) => {
-        this.storeObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
-        this.storeObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
-        this.storeObject.inviteCode = uniqid();
-        db.collection('stores').add(this.storeObject).then((res) => {
-          delete this.userObject.password;
-          this.userObject.id = data?.user?.uid;
-          this.userObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
-          this.userObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
-          this.userObject.storeId = res.id;
-          this.userObject.emailVerified = data?.user?.emailVerified ?? false;
-          db.collection('users').doc(this.userObject.id).set(this.userObject).then(() => {
-            const updateProfile = data?.user?.updateProfile({
-              displayName: this.userObject.name,
+    (this.$refs.basicObserver as Vue & { validate: () => Promise<boolean> })
+      .validate().then((success) => {
+        if (!success) return;
+
+        firebase.auth().createUserWithEmailAndPassword(this.userObject.email, this.userObject.password ?? '')
+          .then((data) => {
+            this.storeObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
+            this.storeObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
+            this.storeObject.inviteCode = uniqid();
+            db.collection('stores').add(this.storeObject).then((res) => {
+              delete this.userObject.password;
+              this.userObject.id = data?.user?.uid;
+              this.userObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
+              this.userObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
+              this.userObject.storeId = res.id;
+              this.userObject.emailVerified = data?.user?.emailVerified ?? false;
+              db.collection('users').doc(this.userObject.id).set(this.userObject).then(() => {
+                const updateProfile = data?.user?.updateProfile({
+                  displayName: this.userObject.name,
+                });
+                console.log('profile updated', updateProfile);
+              });
             });
-            console.log('profile updated', updateProfile);
+          }).catch((err) => {
+            console.log(err);
           });
-        });
-      }).catch((err) => {
-        console.log(err);
       });
   }
 }

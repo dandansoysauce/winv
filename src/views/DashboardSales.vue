@@ -54,25 +54,35 @@
           Sale
         </v-card-title>
         <v-card-text style="max-height: 600px;">
-          <form novalidate>
-            <v-autocomplete :items="products"
-              v-model="saleObject.productId"
-              :loading="searchLoading"
-              :search-input.sync="searchText"
-              hide-no-data
-              hide-selected item-text="name"
-              item-value="id"
-              label="Product"
-              prepend-icon="mdi-database-search"
-              filled
-              @input="productSelected()"></v-autocomplete>
-            <v-text-field label="Quantity" filled v-model="saleObject.quantity"
-              @input="calculateSale()" type="number" min="1"
-              @focus="$event.target.select()"></v-text-field>
-            <v-currency-field label="Total Sale" filled v-model="saleObject.totalSale"
-              readonly></v-currency-field>
-            <v-textarea label="Notes" filled v-model="saleObject.description"></v-textarea>
-          </form>
+          <ValidationObserver ref="observer">
+            <form novalidate>
+              <ValidationProvider v-slot="{ errors }" name="Product" rules="required">
+                <v-autocomplete :items="products"
+                  v-model="saleObject.productId"
+                  :error-messages="errors"
+                  :loading="searchLoading"
+                  :search-input.sync="searchText"
+                  hide-no-data
+                  hide-selected item-text="name"
+                  item-value="id"
+                  label="Product"
+                  prepend-icon="mdi-database-search"
+                  filled
+                  @input="productSelected()"
+                  required></v-autocomplete>
+              </ValidationProvider>
+              <ValidationProvider v-slot="{ errors }" name="Quantity"
+                rules="required|min_value:1">
+                <v-text-field label="Quantity" filled v-model="saleObject.quantity"
+                  @input="calculateSale()" type="number" min="1"
+                  @focus="$event.target.select()" required
+                  :error-messages="errors"></v-text-field>
+              </ValidationProvider>
+              <v-currency-field label="Total Sale" filled v-model="saleObject.totalSale"
+                readonly></v-currency-field>
+              <v-textarea label="Notes" filled v-model="saleObject.description"></v-textarea>
+            </form>
+          </ValidationObserver>
         </v-card-text>
         <v-card-actions class="card-action-padding">
           <v-btn text @click="closeDialog()">Close</v-btn>
@@ -95,6 +105,23 @@ import RecentSalesCard from '@/components/RecentSalesCard.vue';
 import SalesCard from '@/components/SalesCard.vue';
 import ProfitsCard from '@/components/ProfitsCard.vue';
 import ProductsSoldChartCard from '@/components/ProductsSoldChartCard.vue';
+// eslint-disable-next-line @typescript-eslint/camelcase
+import { required, min_value } from 'vee-validate/dist/rules';
+import {
+  extend, ValidationObserver, ValidationProvider, setInteractionMode,
+} from 'vee-validate';
+
+setInteractionMode('eager');
+extend('required', {
+  ...required,
+  message: '{_field_} is required',
+});
+extend('min_value', {
+  // eslint-disable-next-line @typescript-eslint/camelcase
+  ...min_value,
+  message: '{_field_} should be at least {min}',
+});
+
 
 @Component({
   components: {
@@ -103,6 +130,8 @@ import ProductsSoldChartCard from '@/components/ProductsSoldChartCard.vue';
     SalesCard,
     ProfitsCard,
     ProductsSoldChartCard,
+    ValidationObserver,
+    ValidationProvider,
   },
 })
 export default class DashboardSales extends Vue {
@@ -194,26 +223,31 @@ export default class DashboardSales extends Vue {
   }
 
   saveSale() {
-    this.showDialog = false;
-    this.saleObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
+    (this.$refs.observer as Vue & { validate: () => Promise<boolean> })
+      .validate().then((success) => {
+        if (!success) return;
 
-    if (this.dialogMode === 'add') {
-      this.saleObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
-      this.saleObject.dateSale = firebase.firestore.Timestamp.fromDate(new Date());
-      db.collection('sales').add(this.saleObject).then(() => {
-        db.collection('products').doc(this.saleObject.productId).get().then((snap) => {
-          const getProduct = snap.data() as Product;
-          const newQuantity = getProduct.quantity - this.saleObject.quantity;
-          db.collection('products').doc(this.saleObject.productId).update({ quantity: newQuantity }).then(() => {
+        this.showDialog = false;
+        this.saleObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
+
+        if (this.dialogMode === 'add') {
+          this.saleObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
+          this.saleObject.dateSale = firebase.firestore.Timestamp.fromDate(new Date());
+          db.collection('sales').add(this.saleObject).then(() => {
+            db.collection('products').doc(this.saleObject.productId).get().then((snap) => {
+              const getProduct = snap.data() as Product;
+              const newQuantity = getProduct.quantity - this.saleObject.quantity;
+              db.collection('products').doc(this.saleObject.productId).update({ quantity: newQuantity }).then(() => {
+                this.saleObject = this.initSaleObject();
+              });
+            });
+          });
+        } else if (this.dialogMode === 'edit') {
+          db.collection('sales').doc(this.saleObject.id).set(this.saleObject).then(() => {
             this.saleObject = this.initSaleObject();
           });
-        });
+        }
       });
-    } else if (this.dialogMode === 'edit') {
-      db.collection('sales').doc(this.saleObject.id).set(this.saleObject).then(() => {
-        this.saleObject = this.initSaleObject();
-      });
-    }
   }
 
   showDialogAsAdd() {

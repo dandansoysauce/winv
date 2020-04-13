@@ -11,12 +11,21 @@
           </v-list-item>
 
           <v-card-text>
-            <form novalidate autocomplete="off">
-              <v-text-field label="Email" filled v-model="userEmail"
-                prepend-icon="mdi-at"></v-text-field>
-              <v-text-field label="Password" filled v-model="userPassword"
-                type="password" prepend-icon="mdi-textbox-password"></v-text-field>
-            </form>
+            <ValidationObserver ref="observer">
+              <form novalidate autocomplete="off">
+                <ValidationProvider v-slot="{ errors }" name="Email" rules="required|email">
+                  <v-text-field label="Email" filled v-model="userEmail"
+                    prepend-icon="mdi-at" required
+                    :error-messages="errors"></v-text-field>
+                </ValidationProvider>
+                <ValidationProvider v-slot="{ errors }" name="Password" rules="required">
+                  <v-text-field label="Password" filled v-model="userPassword"
+                    type="password" prepend-icon="mdi-textbox-password"
+                    :error-messages="errors"
+                    required></v-text-field>
+                </ValidationProvider>
+              </form>
+            </ValidationObserver>
           </v-card-text>
 
           <v-card-actions class="card-action-padding">
@@ -33,8 +42,28 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { db } from '@/main';
 import * as firebase from 'firebase/app';
+import { required, email } from 'vee-validate/dist/rules';
+import {
+  extend, ValidationObserver, ValidationProvider, setInteractionMode,
+} from 'vee-validate';
 
-@Component
+setInteractionMode('eager');
+extend('required', {
+  ...required,
+  message: '{_field_} is required',
+});
+
+extend('email', {
+  ...email,
+  message: '{_field_} must be a valid email',
+});
+
+@Component({
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+  },
+})
 export default class Home extends Vue {
   userEmail: string;
 
@@ -47,17 +76,20 @@ export default class Home extends Vue {
   }
 
   loginUser(): void {
-    if (this.userEmail.length > 0 && this.userPassword.length > 0) {
-      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-        .then(() => firebase.auth().signInWithEmailAndPassword(this.userEmail, this.userPassword)
-          .then((user) => {
-            db.collection('users').doc(user?.user?.uid).get().then((snapshot) => {
-              this.$store.dispatch('setUser', snapshot.data()).then(() => {
-                console.log('user set to store');
+    (this.$refs.observer as Vue & { validate: () => Promise<boolean> })
+      .validate().then((success) => {
+        if (!success) return;
+
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+          .then(() => firebase.auth().signInWithEmailAndPassword(this.userEmail, this.userPassword)
+            .then((user) => {
+              db.collection('users').doc(user?.user?.uid).get().then((snapshot) => {
+                this.$store.dispatch('setUser', snapshot.data()).then(() => {
+                  console.log('user set to store');
+                });
               });
-            });
-          }));
-    }
+            }));
+      });
   }
 }
 </script>

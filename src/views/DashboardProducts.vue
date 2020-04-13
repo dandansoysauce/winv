@@ -61,95 +61,119 @@
           Product
         </v-card-title>
         <v-card-text style="max-height: 600px;">
-          <form novalidate>
-            <v-text-field label="Name" filled v-model="productObject.name"></v-text-field>
-            <v-textarea label="Description" filled
-              v-model="productObject.description"></v-textarea>
-            <v-select :items="productTypes" v-model="productObject.productTypeId"
-              item-text="name" item-value="id" filled
-              label="Category" @input="productTypeChange()"
-            ></v-select>
-            <v-currency-field label="Sale Price" filled
-              v-model="productObject.salePrice"></v-currency-field>
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-text-field label="Product Code" filled
-                  append-icon="mdi-text-box-plus-outline"
-                  @click:append="generateRandomCode()"
-                  v-model="productObject.productCode"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                 <v-select :items="suppliers" v-model="productObject.suppliedBy"
-                    item-text="name" item-value="id" filled
-                    label="Supplied By" @input="productTypeChange()"
-                  ></v-select>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-currency-field label="Price Per Item" filled
-                  v-model="productObject.pricePerItem"></v-currency-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                 <v-text-field label="Quantity" filled
-                  v-model="productObject.quantity" type="number"
-                  min="1" @focus="$event.target.select()"></v-text-field>
-              </v-col>
-            </v-row>
-            <div class="d-flex">
-              <h4>Custom Properties</h4>
-            </div>
-            <v-row v-for="pr in productObject.properties" :key="pr.id">
-              <v-col cols="12">
-                <v-text-field :label="pr.name" filled v-model="pr.value" type="text"
-                  v-if="pr.propertyType === 'Text'"></v-text-field>
-                <v-text-field :label="pr.name" filled v-model="pr.value" type="number"
-                  v-if="pr.propertyType === 'Number'"></v-text-field>
-                <v-menu
-                  v-model="pr.menu"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"
-                  v-if="pr.propertyType === 'Date'"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field
-                      v-model="pr.value"
-                      :label="pr.name"
-                      readonly
-                      v-on="on"
-                      filled
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="pr.value" @input="pr.menu = false"></v-date-picker>
-                </v-menu>
-                <v-menu
-                  v-model="pr.menu"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"
-                  v-if="pr.propertyType === 'Time'"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field
-                      v-model="pr.value"
-                      :label="pr.name"
-                      readonly
-                      v-on="on"
-                      filled
-                    ></v-text-field>
-                  </template>
-                  <v-time-picker v-model="pr.value" @input="pr.menu = false"></v-time-picker>
-                </v-menu>
-                <v-checkbox v-model="pr.value" :label="pr.name"
-                  v-if="pr.propertyType === 'Checkbox'"></v-checkbox>
-              </v-col>
-            </v-row>
-          </form>
+          <ValidationObserver ref="observer">
+            <form novalidate>
+              <ValidationProvider v-slot="{ errors }" name="Name" rules="required">
+                <v-text-field label="Name" filled v-model="productObject.name"
+                  :error-messages="errors" required></v-text-field>
+              </ValidationProvider>
+              <v-textarea label="Description" filled
+                v-model="productObject.description"></v-textarea>
+              <ValidationProvider v-slot="{ errors }" name="Category" rules="required">
+                <v-select :items="productTypes" v-model="productObject.productTypeId"
+                  item-text="name" item-value="id" filled
+                  label="Category" @input="productTypeChange()"
+                  required
+                  :error-messages="errors"
+                ></v-select>
+              </ValidationProvider>
+              <ValidationProvider v-slot="{ errors }" name="Sale Price"
+                rules="required|min_value:0.01">
+                <v-currency-field label="Sale Price" filled
+                  v-model="productObject.salePrice"
+                  :error-messages="errors" required></v-currency-field>
+              </ValidationProvider>
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <v-text-field label="Product Code" filled
+                    append-icon="mdi-text-box-plus-outline"
+                    @click:append="generateRandomCode()"
+                    v-model="productObject.productCode" readonly></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <ValidationProvider v-slot="{ errors }" name="Supplied By" rules="required">
+                    <v-select :items="suppliers" v-model="productObject.suppliedBy"
+                      item-text="name" item-value="id" filled
+                      label="Supplied By" @input="productTypeChange()"
+                      :error-messages="errors" required
+                    ></v-select>
+                  </ValidationProvider>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <ValidationProvider v-slot="{ errors }" name="Supplier Price"
+                    rules="required|min_value:0.01">
+                    <v-currency-field label="Supplier Price" filled
+                      v-model="productObject.pricePerItem"
+                      :error-messages="errors" required></v-currency-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <ValidationProvider v-slot="{ errors }" name="Supplier"
+                    rules="required|min_value:1">
+                    <v-text-field label="Quantity" filled
+                      v-model="productObject.quantity" type="number"
+                      min="1" @focus="$event.target.select()"
+                      :error-messages="errors" required></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+              </v-row>
+              <div class="d-flex">
+                <h4>Custom Properties</h4>
+              </div>
+              <v-row v-for="pr in productObject.properties" :key="pr.id">
+                <v-col cols="12">
+                  <v-text-field :label="pr.name" filled v-model="pr.value" type="text"
+                    v-if="pr.propertyType === 'Text'"></v-text-field>
+                  <v-text-field :label="pr.name" filled v-model="pr.value" type="number"
+                    v-if="pr.propertyType === 'Number'"></v-text-field>
+                  <v-menu
+                    v-model="pr.menu"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                    v-if="pr.propertyType === 'Date'"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model="pr.value"
+                        :label="pr.name"
+                        readonly
+                        v-on="on"
+                        filled
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="pr.value" @input="pr.menu = false"></v-date-picker>
+                  </v-menu>
+                  <v-menu
+                    v-model="pr.menu"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                    v-if="pr.propertyType === 'Time'"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model="pr.value"
+                        :label="pr.name"
+                        readonly
+                        v-on="on"
+                        filled
+                      ></v-text-field>
+                    </template>
+                    <v-time-picker v-model="pr.value" @input="pr.menu = false"></v-time-picker>
+                  </v-menu>
+                  <v-checkbox v-model="pr.value" :label="pr.name"
+                    v-if="pr.propertyType === 'Checkbox'"></v-checkbox>
+                </v-col>
+              </v-row>
+            </form>
+          </ValidationObserver>
         </v-card-text>
         <v-card-actions class="card-action-padding">
           <v-btn text @click="closeDialog()">Close</v-btn>
@@ -170,8 +194,29 @@ import Supplier from '@/interfaces/Supplier';
 import ProductType from '@/interfaces/ProductType';
 import ProductPropertyType from '@/interfaces/ProductPropertyType';
 import User from '@/interfaces/User';
+// eslint-disable-next-line @typescript-eslint/camelcase
+import { required, min_value } from 'vee-validate/dist/rules';
+import {
+  extend, ValidationObserver, ValidationProvider, setInteractionMode,
+} from 'vee-validate';
 
-@Component
+setInteractionMode('eager');
+extend('required', {
+  ...required,
+  message: '{_field_} is required',
+});
+extend('min_value', {
+  // eslint-disable-next-line @typescript-eslint/camelcase
+  ...min_value,
+  message: '{_field_} should be at least {min}',
+});
+
+@Component({
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+  },
+})
 export default class DashboardProducts extends Vue {
   showDialog: boolean;
 
@@ -250,19 +295,24 @@ export default class DashboardProducts extends Vue {
   }
 
   saveProduct(): void {
-    this.showDialog = false;
-    this.productObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
+    (this.$refs.observer as Vue & { validate: () => Promise<boolean> })
+      .validate().then((success) => {
+        if (!success) return;
 
-    if (this.dialogMode === 'add') {
-      this.productObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
-      db.collection('products').add(this.productObject).then(() => {
-        this.productObject = this.initProductObject();
+        this.showDialog = false;
+        this.productObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
+
+        if (this.dialogMode === 'add') {
+          this.productObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
+          db.collection('products').add(this.productObject).then(() => {
+            this.productObject = this.initProductObject();
+          });
+        } else if (this.dialogMode === 'edit') {
+          db.collection('products').doc(this.productObject.id).set(this.productObject).then(() => {
+            this.productObject = this.initProductObject();
+          });
+        }
       });
-    } else if (this.dialogMode === 'edit') {
-      db.collection('products').doc(this.productObject.id).set(this.productObject).then(() => {
-        this.productObject = this.initProductObject();
-      });
-    }
   }
 
   productTypeChange(): void {
@@ -286,7 +336,7 @@ export default class DashboardProducts extends Vue {
       salePrice: 0,
       suppliedBy: '',
       quantity: 1,
-      productTypeId: 'EvaKvKXKJCUr8TFyBFxc',
+      productTypeId: '',
       name: '',
       description: '',
       modifiedAt: firebase.firestore.Timestamp.fromDate(new Date()),

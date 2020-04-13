@@ -37,32 +37,37 @@
           Product Category
         </v-card-title>
         <v-card-text style="max-height: 600px;">
-          <form novalidate>
-            <v-text-field label="Name" filled v-model="productTypeObject.name"></v-text-field>
-            <v-textarea label="Description" filled
-              v-model="productTypeObject.description"></v-textarea>
-            <div class="d-flex">
-              <h4>Custom Properties</h4>
-              <v-spacer></v-spacer>
-              <v-btn class="mx-2" fab small color="primary" @click="addProperty()">
-                <v-icon dark>mdi-plus</v-icon>
-              </v-btn>
-            </div>
-            <v-row v-for="pr in productTypeObject.properties" :key="pr.id">
-              <v-col cols="12" sm="6">
-                <v-text-field label="Name" filled v-model="pr.name"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-select
-                  v-model="pr.propertyType"
-                  :items="['Text', 'Number', 'Date', 'Time', 'Checkbox']"
-                  label="Type"
-                  filled
-                  required
-                ></v-select>
-              </v-col>
-            </v-row>
-          </form>
+          <ValidationObserver ref="observer">
+            <form novalidate>
+              <ValidationProvider v-slot="{ errors }" name="Name" rules="required">
+                <v-text-field label="Name" filled v-model="productTypeObject.name"
+                  :error-messages="errors"></v-text-field>
+              </ValidationProvider>
+              <v-textarea label="Description" filled
+                v-model="productTypeObject.description"></v-textarea>
+              <div class="d-flex">
+                <h4>Custom Properties</h4>
+                <v-spacer></v-spacer>
+                <v-btn class="mx-2" fab small color="primary" @click="addProperty()">
+                  <v-icon dark>mdi-plus</v-icon>
+                </v-btn>
+              </div>
+              <v-row v-for="pr in productTypeObject.properties" :key="pr.id">
+                <v-col cols="12" sm="6">
+                  <v-text-field label="Name" filled v-model="pr.name"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="pr.propertyType"
+                    :items="['Text', 'Number', 'Date', 'Time', 'Checkbox']"
+                    label="Type"
+                    filled
+                    required
+                  ></v-select>
+                </v-col>
+              </v-row>
+            </form>
+          </ValidationObserver>
         </v-card-text>
         <v-card-actions class="card-action-padding">
           <v-btn text @click="closeDialog()">Close</v-btn>
@@ -81,8 +86,28 @@ import ProductType from '@/interfaces/ProductType';
 import ProductPropertyType from '@/interfaces/ProductPropertyType';
 import User from '@/interfaces/User';
 import uniqid from 'uniqid';
+import { required, email } from 'vee-validate/dist/rules';
+import {
+  extend, ValidationObserver, ValidationProvider, setInteractionMode,
+} from 'vee-validate';
 
-@Component
+setInteractionMode('eager');
+extend('required', {
+  ...required,
+  message: '{_field_} is required',
+});
+
+extend('email', {
+  ...email,
+  message: '{_field_} must be a valid email',
+});
+
+@Component({
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+  },
+})
 export default class DashboardProductTypes extends Vue {
   showDialog: boolean;
 
@@ -143,19 +168,24 @@ export default class DashboardProductTypes extends Vue {
   }
 
   saveProductType(): void {
-    this.showDialog = false;
-    this.productTypeObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
+    (this.$refs.observer as Vue & { validate: () => Promise<boolean> })
+      .validate().then((success) => {
+        if (!success) return;
 
-    if (this.dialogMode === 'add') {
-      this.productTypeObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
-      db.collection('producttypes').add(this.productTypeObject).then(() => {
-        this.productTypeObject = this.initProductTypeObject();
+        this.showDialog = false;
+        this.productTypeObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
+
+        if (this.dialogMode === 'add') {
+          this.productTypeObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
+          db.collection('producttypes').add(this.productTypeObject).then(() => {
+            this.productTypeObject = this.initProductTypeObject();
+          });
+        } else if (this.dialogMode === 'edit') {
+          db.collection('producttypes').doc(this.productTypeObject.id).set(this.productTypeObject).then(() => {
+            this.productTypeObject = this.initProductTypeObject();
+          });
+        }
       });
-    } else if (this.dialogMode === 'edit') {
-      db.collection('producttypes').doc(this.productTypeObject.id).set(this.productTypeObject).then(() => {
-        this.productTypeObject = this.initProductTypeObject();
-      });
-    }
   }
 
   addProperty() {

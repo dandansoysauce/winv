@@ -37,25 +37,40 @@
           Supplier
         </v-card-title>
         <v-card-text style="max-height: 600px;">
-          <form novalidate>
-            <v-text-field label="Name" filled v-model="supplierObject.name"></v-text-field>
-            <v-textarea label="Description" filled
-              v-model="supplierObject.description"></v-textarea>
-            <v-textarea label="Address" filled
-              v-model="supplierObject.address"></v-textarea>
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-text-field label="Email" filled
-                  v-model="supplierObject.contactEmail"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-text-field label="Contact Number" filled
-                  v-model="supplierObject.contactNumber"></v-text-field>
-              </v-col>
-            </v-row>
-            <v-textarea label="Other Notes" filled
-              v-model="supplierObject.notes"></v-textarea>
-          </form>
+          <ValidationObserver ref="observer">
+            <form novalidate autocomplete="off">
+              <ValidationProvider v-slot="{ errors }" name="Name" rules="required">
+                <v-text-field label="Name" filled v-model="supplierObject.name"
+                  :error-messages="errors" required></v-text-field>
+              </ValidationProvider>
+              <v-textarea label="Description" filled
+                v-model="supplierObject.description"></v-textarea>
+              <ValidationProvider v-slot="{ errors }" name="Address" rules="required">
+                <v-textarea label="Address" filled
+                  v-model="supplierObject.address"
+                  :error-messages="errors" required></v-textarea>
+              </ValidationProvider>
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <ValidationProvider v-slot="{ errors }" name="Email" rules="required|email">
+                    <v-text-field label="Email" filled
+                      v-model="supplierObject.contactEmail"
+                      :error-messages="errors" required></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <ValidationProvider v-slot="{ errors }" name="Contact Number"
+                    rules="required">
+                    <v-text-field label="Contact Number" filled
+                      v-model="supplierObject.contactNumber"
+                      :error-messages="errors" required></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+              </v-row>
+              <v-textarea label="Other Notes" filled
+                v-model="supplierObject.notes"></v-textarea>
+            </form>
+          </ValidationObserver>
         </v-card-text>
         <v-card-actions class="card-action-padding">
           <v-btn text @click="closeDialog()">Close</v-btn>
@@ -72,8 +87,28 @@ import { db } from '@/main';
 import * as firebase from 'firebase/app';
 import Supplier from '@/interfaces/Supplier';
 import User from '@/interfaces/User';
+import { required, email } from 'vee-validate/dist/rules';
+import {
+  extend, ValidationObserver, ValidationProvider, setInteractionMode,
+} from 'vee-validate';
 
-@Component
+setInteractionMode('eager');
+extend('required', {
+  ...required,
+  message: '{_field_} is required',
+});
+
+extend('email', {
+  ...email,
+  message: '{_field_} must be a valid email',
+});
+
+@Component({
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+  },
+})
 export default class DashboardSuppliers extends Vue {
   showDialog: boolean;
 
@@ -134,19 +169,24 @@ export default class DashboardSuppliers extends Vue {
   }
 
   saveSupplier(): void {
-    this.showDialog = false;
-    this.supplierObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
+    (this.$refs.observer as Vue & { validate: () => Promise<boolean> })
+      .validate().then((success) => {
+        if (!success) return;
 
-    if (this.dialogMode === 'add') {
-      this.supplierObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
-      db.collection('suppliers').add(this.supplierObject).then(() => {
-        this.supplierObject = this.initAddNewSupplier();
+        this.showDialog = false;
+        this.supplierObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
+
+        if (this.dialogMode === 'add') {
+          this.supplierObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
+          db.collection('suppliers').add(this.supplierObject).then(() => {
+            this.supplierObject = this.initAddNewSupplier();
+          });
+        } else if (this.dialogMode === 'edit') {
+          db.collection('suppliers').doc(this.supplierObject.id).set(this.supplierObject).then(() => {
+            this.supplierObject = this.initAddNewSupplier();
+          });
+        }
       });
-    } else if (this.dialogMode === 'edit') {
-      db.collection('suppliers').doc(this.supplierObject.id).set(this.supplierObject).then(() => {
-        this.supplierObject = this.initAddNewSupplier();
-      });
-    }
   }
 
   editSupplier(supplier: Supplier): void {
