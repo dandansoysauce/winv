@@ -4,11 +4,11 @@ SimpleWonder is a web-based inventory management system that offers fast, simple
 
 Made with Vue.js and Firebase.
 
-### **BETA WILL BE UP SOON!**
-
 <a href="https://www.patreon.com/daniona">
 <img src="https://raw.githubusercontent.com/dandansoysauce/winv/master/resources/patreon.png" alt="drawing" width="200"/>
 </a>
+
+### **BETA WILL BE UP SOON!**
 
 ![sample shot](https://raw.githubusercontent.com/dandansoysauce/winv/master/resources/sample-img-1.png)
 
