@@ -59,9 +59,7 @@ new Vue({
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         db.collection('users').doc(user.uid).get().then((snapshot) => {
-          this.$store.dispatch('setUser', snapshot.data()).then(() => {
-            console.log('user set to store');
-          });
+          this.$store.dispatch('setUser', snapshot.data());
         });
         if (router.currentRoute.name !== 'DashboardHome') {
           router.push({ name: 'DashboardHome' });
