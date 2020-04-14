@@ -24,12 +24,12 @@ jobs:
 
     # Runs a single command using the runners shell
     - name: Install Dependencies
-    - uses: borales/actions-yarn@v2.1.0
     - uses: actions/setup-node@v1
       with:
         node-version: '12'
-    - run: install
-    - run: build
+    - uses: borales/actions-yarn@v2.1.0
+      with:
+        cmd: install
 
     # Runs a set of commands using the runners shell
     - name: Archive Production Artifact
