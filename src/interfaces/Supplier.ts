@@ -5,4 +5,4 @@ export default interface Supplier extends BaseObject {
   contactEmail: string;
   contactNumber: string;
   notes: string;
-}
+};

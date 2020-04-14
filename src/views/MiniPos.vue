@@ -84,7 +84,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { db } from '@/main';
 import Product from '@/interfaces/Product';
 import ProductTransaction from '@/interfaces/ProductTransaction';
 

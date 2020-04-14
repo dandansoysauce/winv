@@ -181,10 +181,6 @@ export default class AccountCreation extends Vue {
     this.confirmPassword = '';
   }
 
-  created() {
-    console.log(this.$route.params.inviteCode);
-  }
-
   continueStep(step: number) {
     (this.$refs.basicObserver as Vue & { validate: () => Promise<boolean> })
       .validate().then((success) => {
@@ -212,14 +208,12 @@ export default class AccountCreation extends Vue {
               this.userObject.storeId = res.id;
               this.userObject.emailVerified = data?.user?.emailVerified ?? false;
               db.collection('users').doc(this.userObject.id).set(this.userObject).then(() => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const updateProfile = data?.user?.updateProfile({
                   displayName: this.userObject.name,
                 });
-                console.log('profile updated', updateProfile);
               });
             });
-          }).catch((err) => {
-            console.log(err);
           });
       });
   }

@@ -1,5 +1,5 @@
-import BaseObject from './BaseObject';
 import * as firebase from 'firebase/app';
+import BaseObject from './BaseObject';
 
 export default interface Sale extends BaseObject {
   productId: string;
@@ -9,4 +9,4 @@ export default interface Sale extends BaseObject {
   totalSale: number;
   dateSale: firebase.firestore.Timestamp;
   soldBy?: string;
-}
+};

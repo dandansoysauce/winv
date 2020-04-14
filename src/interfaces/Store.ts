@@ -7,4 +7,4 @@ export default interface Store {
   storeAddress: string;
   createdAt: firebase.firestore.Timestamp;
   modifiedAt: firebase.firestore.Timestamp;
-}
+};

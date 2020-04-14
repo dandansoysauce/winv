@@ -6,4 +6,4 @@ export default interface ProductTransaction extends BaseObject {
   suppliedBy: string;
   quantity: number;
   productTypeId: string;
-}
+};

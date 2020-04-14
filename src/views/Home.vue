@@ -1,11 +1,11 @@
 <template>
   <v-container class="fill-height" fluid>
     <v-row align="center" justify="center">
-      <v-col>
-        <v-card class="mx-auto" max-width="600" raised>
+      <v-col class="d-flex flex-column">
+        <v-card class="mx-auto" width="600" max-width="600" raised>
           <v-list-item two-line>
             <v-list-item-content>
-              <div class="overline mb-4">SimpleWonder Inventory</div>
+              <div class="overline mb-4"><b>SimpleWonder Inventory v0.1BETA</b></div>
               <v-list-item-title class="headline mb-1">Sign In</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -33,6 +33,19 @@
             <v-btn depressed color="primary" @click="loginUser()" width="160">Enter</v-btn>
           </v-card-actions>
         </v-card>
+        <div class="mt-3 mx-auto flex-row">
+          <v-btn href="https://www.buymeacoffee.com/WLmhc53q0" color="warning" dark
+            target="_blank">
+            <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" height="24"
+              alt="Buy me a coffee" style="margin-right: 15px;">
+            Buy me a coffee
+          </v-btn>
+          <v-btn class="ml-4" href="https://www.patreon.com/bePatron?u=33573268" color="error" dark
+            target="_blank">
+            <v-icon style="margin-right: 15px;">mdi-patreon</v-icon>
+            Become a Patron
+          </v-btn>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -84,9 +97,7 @@ export default class Home extends Vue {
           .then(() => firebase.auth().signInWithEmailAndPassword(this.userEmail, this.userPassword)
             .then((user) => {
               db.collection('users').doc(user?.user?.uid).get().then((snapshot) => {
-                this.$store.dispatch('setUser', snapshot.data()).then(() => {
-                  console.log('user set to store');
-                });
+                this.$store.dispatch('setUser', snapshot.data());
               });
             }));
       });
