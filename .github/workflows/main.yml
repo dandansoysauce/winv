@@ -30,8 +30,8 @@ jobs:
     - run: yarn install
     - run: yarn run build
       env:
-        VUE_APP_PROJECT_ID: ${{ secrets.FIREBASE_WEBAPI }}
-        VUE_APP_FIREBASE_WEBAPI: ${{ secrets.FIREBASE_PROJECT_ID }}
+        VUE_APP_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        VUE_APP_FIREBASE_WEBAPI: ${{ secrets.FIREBASE_WEBAPI }}
         VUE_APP_FIREBASE_BUCKET: ${{ secrets.FIREBASE_BUCKET }}
 
     # Runs a set of commands using the runners shell
