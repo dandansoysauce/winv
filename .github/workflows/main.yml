@@ -29,6 +29,10 @@ jobs:
         node-version: '12.x'
     - run: yarn install
     - run: yarn run build
+      env:
+        VUE_APP_PROJECT_ID: ${{ secrets.FIREBASE_WEBAPI }}
+        VUE_APP_FIREBASE_WEBAPI: ${{ secrets.FIREBASE_PROJECT_ID }}
+        VUE_APP_FIREBASE_BUCKET: ${{ secrets.FIREBASE_BUCKET }}
 
     # Runs a set of commands using the runners shell
     - name: Archive Production Artifact
@@ -36,3 +40,21 @@ jobs:
       with:
         name: dist
         path: dist
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: dist
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
