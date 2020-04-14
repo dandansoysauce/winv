@@ -24,9 +24,6 @@ jobs:
 
     # Runs a single command using the runners shell
     - name: Install Dependencies
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '12'
     - uses: borales/actions-yarn@v2.1.0
       with:
         cmd: install
