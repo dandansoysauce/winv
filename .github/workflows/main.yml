@@ -27,9 +27,11 @@ jobs:
       uses: borales/actions-yarn@v2.1.0
       with:
         cmd: install
-    - uses: borales/actions-yarn@v2.0.0
+    - uses: actions/setup-node@v1
       with:
-        cmd: build
+        node-version: '12.x'
+    - run: install
+    - run: build
 
     # Runs a set of commands using the runners shell
     - name: Archive Production Artifact
