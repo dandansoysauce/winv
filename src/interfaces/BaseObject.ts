@@ -9,4 +9,4 @@ export default interface BaseObject {
   createdAt: firebase.firestore.Timestamp;
   modifiedBy: string;
   enabled: boolean;
-};
+}

@@ -10,4 +10,4 @@ export default interface User {
   password?: string;
   createdAt: firebase.firestore.Timestamp;
   modifiedAt: firebase.firestore.Timestamp;
-};
+}

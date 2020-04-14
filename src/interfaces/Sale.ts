@@ -9,4 +9,4 @@ export default interface Sale extends BaseObject {
   totalSale: number;
   dateSale: firebase.firestore.Timestamp;
   soldBy?: string;
-};
+}

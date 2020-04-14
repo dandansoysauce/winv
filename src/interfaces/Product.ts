@@ -9,4 +9,4 @@ export default interface Product extends BaseObject {
   quantity: number;
   productTypeId: string;
   properties: ProductPropertyType[];
-};
+}
