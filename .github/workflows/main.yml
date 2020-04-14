@@ -24,9 +24,12 @@ jobs:
 
     # Runs a single command using the runners shell
     - name: Install Dependencies
-    - uses: borales/actions-yarn@v2.1.0
+      uses: borales/actions-yarn@v2.1.0
       with:
         cmd: install
+    - uses: borales/actions-yarn@v2.0.0
+      with:
+        cmd: build
 
     # Runs a set of commands using the runners shell
     - name: Archive Production Artifact
