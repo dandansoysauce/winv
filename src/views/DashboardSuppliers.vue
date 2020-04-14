@@ -10,74 +10,17 @@
           <v-row>
             <v-col v-for="supplier in suppliers" :key="supplier.id"
               cols="12" sm="4">
-              <v-card class="mx-auto" raised>
-                <v-card-title>
-                  {{ supplier.name }}
-                </v-card-title>
-                <v-card-subtitle>
-                  {{ supplier.description }}
-                </v-card-subtitle>
-                <v-card-actions>
-                  <v-btn text>
-                    View
-                  </v-btn>
-                  <v-btn color="primary" depressed @click="editSupplier(supplier)">
-                    Edit
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
+              <SupplierCard :supplier-info="supplier"
+                :show-dialog.sync="showDialog"
+                :dialog-mode.sync="dialogMode"
+                :supplier-object.sync="supplierObject"></SupplierCard>
             </v-col>
           </v-row>
         </div>
       </div>
     </div>
-    <v-dialog v-model="showDialog" max-width="600" scrollable persistent>
-      <v-card>
-        <v-card-title class="headline" primary-title>
-          Supplier
-        </v-card-title>
-        <v-card-text style="max-height: 600px;">
-          <ValidationObserver ref="observer">
-            <form novalidate autocomplete="off">
-              <ValidationProvider v-slot="{ errors }" name="Name" rules="required">
-                <v-text-field label="Name" filled v-model="supplierObject.name"
-                  :error-messages="errors" required></v-text-field>
-              </ValidationProvider>
-              <v-textarea label="Description" filled
-                v-model="supplierObject.description"></v-textarea>
-              <ValidationProvider v-slot="{ errors }" name="Address" rules="required">
-                <v-textarea label="Address" filled
-                  v-model="supplierObject.address"
-                  :error-messages="errors" required></v-textarea>
-              </ValidationProvider>
-              <v-row>
-                <v-col cols="12" sm="6">
-                  <ValidationProvider v-slot="{ errors }" name="Email" rules="required|email">
-                    <v-text-field label="Email" filled
-                      v-model="supplierObject.contactEmail"
-                      :error-messages="errors" required></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <ValidationProvider v-slot="{ errors }" name="Contact Number"
-                    rules="required">
-                    <v-text-field label="Contact Number" filled
-                      v-model="supplierObject.contactNumber"
-                      :error-messages="errors" required></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-              </v-row>
-              <v-textarea label="Other Notes" filled
-                v-model="supplierObject.notes"></v-textarea>
-            </form>
-          </ValidationObserver>
-        </v-card-text>
-        <v-card-actions class="card-action-padding">
-          <v-btn text @click="closeDialog()">Close</v-btn>
-          <v-btn color="primary" depressed width="120" @click="saveSupplier()">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <SupplierDialog :dialog-mode="dialogMode" :supplier-object="supplierObject"
+      :show-dialog.sync="showDialog"></SupplierDialog>
   </v-container>
 </template>
 
@@ -87,30 +30,17 @@ import { db } from '@/main';
 import * as firebase from 'firebase/app';
 import Supplier from '@/interfaces/Supplier';
 import User from '@/interfaces/User';
-import { required, email } from 'vee-validate/dist/rules';
-import {
-  extend, ValidationObserver, ValidationProvider, setInteractionMode,
-} from 'vee-validate';
-
-setInteractionMode('eager');
-extend('required', {
-  ...required,
-  message: '{_field_} is required',
-});
-
-extend('email', {
-  ...email,
-  message: '{_field_} must be a valid email',
-});
+import SupplierDialog from '@/components/dialogs/SupplierDialog.vue';
+import SupplierCard from '@/components/cards/SupplierCard.vue';
 
 @Component({
   components: {
-    ValidationObserver,
-    ValidationProvider,
+    SupplierDialog,
+    SupplierCard,
   },
 })
 export default class DashboardSuppliers extends Vue {
-  showDialog: boolean;
+  showDialog!: boolean;
 
   dialogMode: string;
 
@@ -122,11 +52,11 @@ export default class DashboardSuppliers extends Vue {
 
   constructor() {
     super();
-    this.showDialog = false;
     this.dialogMode = '';
     this.suppliers = Array<Supplier>();
     this.currentUser = {} as User;
     this.supplierObject = {} as Supplier;
+    this.showDialog = false;
   }
 
   created() {
@@ -158,35 +88,9 @@ export default class DashboardSuppliers extends Vue {
   }
 
   showDialogAsAdd(): void {
+    this.supplierObject = this.initAddNewSupplier();
     this.showDialog = true;
     this.dialogMode = 'add';
-  }
-
-  closeDialog(): void {
-    this.showDialog = false;
-    this.dialogMode = '';
-    this.supplierObject = this.initAddNewSupplier();
-  }
-
-  saveSupplier(): void {
-    (this.$refs.observer as Vue & { validate: () => Promise<boolean> })
-      .validate().then((success) => {
-        if (!success) return;
-
-        this.showDialog = false;
-        this.supplierObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
-
-        if (this.dialogMode === 'add') {
-          this.supplierObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
-          db.collection('suppliers').add(this.supplierObject).then(() => {
-            this.supplierObject = this.initAddNewSupplier();
-          });
-        } else if (this.dialogMode === 'edit') {
-          db.collection('suppliers').doc(this.supplierObject.id).set(this.supplierObject).then(() => {
-            this.supplierObject = this.initAddNewSupplier();
-          });
-        }
-      });
   }
 
   editSupplier(supplier: Supplier): void {
