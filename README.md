@@ -1,4 +1,4 @@
-# ![icon](https://raw.githubusercontent.com/dandansoysauce/winv/master/resources/icon-32.png "icon") SimpleWonder - A simple, wonderful Inventory Management System
+# ![icon](https://raw.githubusercontent.com/dandansoysauce/winv/master/resources/icon-32.png "icon") SimpleWonder - A simple, wonderful Inventory Management System ![CI](https://github.com/dandansoysauce/winv/workflows/CI/badge.svg)
 
 SimpleWonder is a web-based inventory management system that offers fast, simple and modern look-and-feel.
 
