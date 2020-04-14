@@ -8,5 +8,6 @@ export default interface Product extends BaseObject {
   suppliedBy: string;
   quantity: number;
   productTypeId: string;
+  salePricePercentage: number;
   properties: ProductPropertyType[];
 }

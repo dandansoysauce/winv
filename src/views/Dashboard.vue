@@ -18,20 +18,20 @@
             <v-list-item-title>Products</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link to="/dashboard/suppliers">
-          <v-list-item-action>
-            <v-icon>mdi-truck</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Suppliers</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
         <v-list-item link to="/dashboard/sales">
           <v-list-item-action>
             <v-icon>mdi-sale</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Sales</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link to="/dashboard/suppliers">
+          <v-list-item-action>
+            <v-icon>mdi-truck</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Suppliers</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item link to="/dashboard/producttypes">
