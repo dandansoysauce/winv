@@ -9,7 +9,7 @@
         <div class="fill-height mt-4">
           <v-row>
             <v-col v-for="productType in productTypes" :key="productType.id"
-              cols="12" sm="4">
+              cols="12" sm="6" md="4">
               <ProductTypeCard :product-type-info="productType"
                 :show-dialog.sync="showDialog"
                 :dialog-mode.sync="dialogMode"

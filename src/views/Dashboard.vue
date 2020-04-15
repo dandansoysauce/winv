@@ -71,7 +71,7 @@
     </v-navigation-drawer>
 
     <v-app-bar app clipped-left>
-      <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
+      <v-app-bar-nav-icon class="d-md-none" @click.stop="drawer = !drawer" />
       <v-toolbar-title>{{ getStoreName }}</v-toolbar-title>
     </v-app-bar>
 

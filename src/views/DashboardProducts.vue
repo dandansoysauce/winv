@@ -9,7 +9,7 @@
         <div class="fill-height mt-4">
           <v-row>
             <v-col v-for="product in products" :key="product.id"
-              cols="12" sm="4">
+              cols="12" sm="6" md="4">
               <v-card class="mx-auto" raised>
                 <v-list-item two-line>
                   <v-list-item-content>

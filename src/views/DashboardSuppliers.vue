@@ -9,7 +9,7 @@
         <div class="fill-height mt-4">
           <v-row>
             <v-col v-for="supplier in suppliers" :key="supplier.id"
-              cols="12" sm="4">
+              cols="12" sm="6" md="4">
               <SupplierCard :supplier-info="supplier"
                 :show-dialog.sync="showDialog"
                 :dialog-mode.sync="dialogMode"
