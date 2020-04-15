@@ -10,47 +10,10 @@
           <v-row>
             <v-col v-for="product in products" :key="product.id"
               cols="12" sm="6" md="4">
-              <v-card class="mx-auto" raised>
-                <v-list-item two-line>
-                  <v-list-item-content>
-                    <v-list-item-title class="headline">{{ product.name }}</v-list-item-title>
-                    <v-list-item-subtitle>
-                      {{ product.description.length > 0 ? product.description
-                        : 'No Description' }}
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-row align="center">
-                  <v-col cols="6">
-                    <v-list-item>
-                      <v-list-item-icon>
-                        <v-icon>mdi-package-variant-closed</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-subtitle>{{ product.quantity }} pcs</v-list-item-subtitle>
-                    </v-list-item>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-list-item>
-                      <v-list-item-icon>
-                        <v-icon>mdi-cash</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-subtitle>{{ product.salePrice }} ea.</v-list-item-subtitle>
-                    </v-list-item>
-                  </v-col>
-                </v-row>
-                <v-card-actions>
-                  <v-btn text>
-                    View
-                  </v-btn>
-                  <v-btn depressed @click="editProduct(product)">
-                    Edit
-                  </v-btn>
-                  <v-btn color="pink" depressed dark
-                    @click="restockProduct(product)">
-                    Restock
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
+              <ProductCard :product-info="product"
+                :show-dialog.sync="showDialog"
+                :dialog-mode.sync="dialogMode"
+                :product-object.sync="productObject"></ProductCard>
             </v-col>
           </v-row>
         </div>
@@ -117,141 +80,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="showDialog" max-width="600" scrollable persistent>
-      <v-card>
-        <v-card-title class="headline" primary-title>
-          Product
-        </v-card-title>
-        <v-card-text style="max-height: 600px;">
-          <ValidationObserver ref="observer">
-            <form novalidate>
-              <ValidationProvider v-slot="{ errors }" name="Name" rules="required">
-                <v-text-field label="Name" filled v-model="productObject.name"
-                  :error-messages="errors" required></v-text-field>
-              </ValidationProvider>
-              <v-textarea label="Description" filled
-                v-model="productObject.description"></v-textarea>
-              <ValidationProvider v-slot="{ errors }" name="Category" rules="required">
-                <v-select :items="productTypes" v-model="productObject.productTypeId"
-                  item-text="name" item-value="id" filled
-                  label="Category" @input="productTypeChange()"
-                  required
-                  :error-messages="errors"
-                ></v-select>
-              </ValidationProvider>
-              <v-row>
-                <v-col cols="12" sm="6">
-                  <ValidationProvider v-slot="{ errors }" name="Supplier Price"
-                    rules="required|min_value:0.01">
-                    <v-currency-field label="Supplier Price" filled
-                      v-model="productObject.pricePerItem"
-                      :error-messages="errors" required
-                      @input="setPricePercentage()"></v-currency-field>
-                  </ValidationProvider>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <ValidationProvider v-slot="{ errors }" name="Quantity"
-                    rules="required|min_value:1">
-                    <v-text-field label="Quantity" filled
-                      v-model="productObject.quantity" type="number"
-                      min="1" @focus="$event.target.select()"
-                      :error-messages="errors" required></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-              </v-row>
-              <ValidationProvider v-slot="{ errors }" name="Price Percentage"
-                rules="required">
-                <v-currency-field label="Price Percentage" filled
-                  v-model="productObject.salePricePercentage"
-                  :error-messages="errors" required
-                  @input="setPricePercentage()"></v-currency-field>
-              </ValidationProvider>
-              <ValidationProvider v-slot="{ errors }" name="Sale Price"
-                rules="required|min_value:0.01">
-                <v-currency-field label="Sale Price" filled
-                  v-model="productObject.salePrice"
-                  :error-messages="errors" required
-                  :disabled="productObject.salePricePercentage > 0"></v-currency-field>
-              </ValidationProvider>
-              <v-row>
-                <v-col cols="12" sm="6">
-                  <v-text-field label="Product Code" filled
-                    append-icon="mdi-text-box-plus-outline"
-                    @click:append="generateRandomCode()"
-                    v-model="productObject.productCode" readonly></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <ValidationProvider v-slot="{ errors }" name="Supplied By" rules="required">
-                    <v-select :items="suppliers" v-model="productObject.suppliedBy"
-                      item-text="name" item-value="id" filled
-                      label="Supplied By"
-                      :error-messages="errors" required
-                    ></v-select>
-                  </ValidationProvider>
-                </v-col>
-              </v-row>
-              <div class="d-flex">
-                <h4>Custom Properties</h4>
-              </div>
-              <v-row v-for="pr in productObject.properties" :key="pr.id">
-                <v-col cols="12">
-                  <v-text-field :label="pr.name" filled v-model="pr.value" type="text"
-                    v-if="pr.propertyType === 'Text'"></v-text-field>
-                  <v-text-field :label="pr.name" filled v-model="pr.value" type="number"
-                    v-if="pr.propertyType === 'Number'"></v-text-field>
-                  <v-menu
-                    v-model="pr.menu"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="290px"
-                    v-if="pr.propertyType === 'Date'"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model="pr.value"
-                        :label="pr.name"
-                        readonly
-                        v-on="on"
-                        filled
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker v-model="pr.value" @input="pr.menu = false"></v-date-picker>
-                  </v-menu>
-                  <v-menu
-                    v-model="pr.menu"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="290px"
-                    v-if="pr.propertyType === 'Time'"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model="pr.value"
-                        :label="pr.name"
-                        readonly
-                        v-on="on"
-                        filled
-                      ></v-text-field>
-                    </template>
-                    <v-time-picker v-model="pr.value" @input="pr.menu = false"></v-time-picker>
-                  </v-menu>
-                  <v-checkbox v-model="pr.value" :label="pr.name"
-                    v-if="pr.propertyType === 'Checkbox'"></v-checkbox>
-                </v-col>
-              </v-row>
-            </form>
-          </ValidationObserver>
-        </v-card-text>
-        <v-card-actions class="card-action-padding">
-          <v-btn text @click="closeDialog()">Close</v-btn>
-          <v-btn color="primary" depressed width="120" @click="saveProduct()">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <ProductDialog :dialog-mode="dialogMode" :product-object="productObject"
+      :show-dialog.sync="showDialog" :suppliers="suppliers"
+      :product-types="productTypes"></ProductDialog>
   </v-container>
 </template>
 
@@ -263,30 +94,15 @@ import uniqid from 'uniqid';
 import Product from '@/interfaces/Product';
 import Supplier from '@/interfaces/Supplier';
 import ProductType from '@/interfaces/ProductType';
-import ProductPropertyType from '@/interfaces/ProductPropertyType';
 import User from '@/interfaces/User';
 import Restock from '@/interfaces/Restock';
-// eslint-disable-next-line @typescript-eslint/camelcase
-import { required, min_value } from 'vee-validate/dist/rules';
-import {
-  extend, ValidationObserver, ValidationProvider, setInteractionMode,
-} from 'vee-validate';
-
-setInteractionMode('eager');
-extend('required', {
-  ...required,
-  message: '{_field_} is required',
-});
-extend('min_value', {
-  // eslint-disable-next-line @typescript-eslint/camelcase
-  ...min_value,
-  message: '{_field_} should be at least {min}',
-});
+import ProductDialog from '@/components/dialogs/ProductDialog.vue';
+import ProductCard from '@/components/cards/ProductCard.vue';
 
 @Component({
   components: {
-    ValidationObserver,
-    ValidationProvider,
+    ProductDialog,
+    ProductCard,
   },
 })
 export default class DashboardProducts extends Vue {
@@ -302,8 +118,6 @@ export default class DashboardProducts extends Vue {
 
   productObject: Product;
 
-  productObjectCustomProperties: ProductPropertyType[];
-
   products: Product[];
 
   currentUser: User;
@@ -315,7 +129,6 @@ export default class DashboardProducts extends Vue {
     this.showDialog = false;
     this.showRestockDialog = false;
     this.dialogMode = '';
-    this.productObjectCustomProperties = [];
     this.productTypes = Array<ProductType>();
     this.suppliers = Array<Supplier>();
     this.products = Array<Product>();
@@ -336,8 +149,6 @@ export default class DashboardProducts extends Vue {
       this.$bind('products', db.collection('products')
         .where('storeId', '==', this.currentUser.storeId)
         .orderBy('name'));
-
-      this.productObject = this.initProductObject();
     } else {
       this.productTypes = [];
       this.suppliers = [];
@@ -346,6 +157,7 @@ export default class DashboardProducts extends Vue {
   }
 
   showDialogAsAdd(): void {
+    this.productObject = this.initProductObject();
     this.showDialog = true;
     this.dialogMode = 'add';
   }
@@ -372,28 +184,6 @@ export default class DashboardProducts extends Vue {
     };
 
     this.showRestockDialog = true;
-  }
-
-  closeDialog(): void {
-    this.showDialog = false;
-    this.dialogMode = '';
-    this.productObject = {} as Product;
-  }
-
-  enableDisable(product: Product): void {
-    const state = product.enabled;
-    db.collection('products').doc(product.id).update({ enabled: state, modifiedAt: new Date() });
-  }
-
-  editProduct(product: Product): void {
-    this.showDialog = true;
-    this.dialogMode = 'edit';
-    this.productObject = product;
-  }
-
-  viewProduct(product: Product): void {
-    this.showDialog = true;
-    this.productObject = product;
   }
 
   calculateNewPriceOnRestock() {
@@ -440,48 +230,6 @@ export default class DashboardProducts extends Vue {
       });
   }
 
-  saveProduct(): void {
-    (this.$refs.observer as Vue & { validate: () => Promise<boolean> })
-      .validate().then((success) => {
-        if (!success) return;
-
-        this.showDialog = false;
-        this.productObject.modifiedAt = firebase.firestore.Timestamp.fromDate(new Date());
-
-        if (this.dialogMode === 'add') {
-          this.productObject.createdAt = firebase.firestore.Timestamp.fromDate(new Date());
-          db.collection('products').add(this.productObject).then(() => {
-            this.productObject = this.initProductObject();
-          });
-        } else if (this.dialogMode === 'edit') {
-          db.collection('products').doc(this.productObject.id).set(this.productObject).then(() => {
-            this.productObject = this.initProductObject();
-          });
-        }
-      });
-  }
-
-  setPricePercentage() {
-    if (this.productObject.salePricePercentage > 0 && this.productObject.pricePerItem > 0) {
-      this.productObject.salePrice = this.productObject.pricePerItem
-        + (this.productObject.pricePerItem * (this.productObject.salePricePercentage / 100));
-    }
-  }
-
-  productTypeChange(): void {
-    const getProductType = this.productTypes.filter((x) => x.id
-      === this.productObject.productTypeId)[0];
-    if (getProductType) {
-      this.productObject.properties = getProductType.properties;
-    } else {
-      this.productObject.properties = [];
-    }
-  }
-
-  generateRandomCode(): void {
-    this.productObject.productCode = uniqid();
-  }
-
   initProductObject(): Product {
     return {
       productCode: uniqid(),
@@ -503,9 +251,3 @@ export default class DashboardProducts extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.container {
-  flex: 1;
-}
-</style>
