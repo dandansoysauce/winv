@@ -92,22 +92,6 @@ export default class DashboardSuppliers extends Vue {
     this.showDialog = true;
     this.dialogMode = 'add';
   }
-
-  editSupplier(supplier: Supplier): void {
-    this.showDialog = true;
-    this.dialogMode = 'edit';
-    this.supplierObject = supplier;
-  }
-
-  enableDisable(supplier: Supplier): void {
-    const state = supplier.enabled;
-    db.collection('suppliers').doc(supplier.id).update({ enabled: state, modifiedAt: new Date() });
-  }
-
-  viewSupplier(supplier: Supplier): void {
-    this.showDialog = true;
-    this.supplierObject = supplier;
-  }
 }
 </script>
 

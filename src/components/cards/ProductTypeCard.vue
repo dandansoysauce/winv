@@ -1,16 +1,16 @@
 <template>
   <v-card class="mx-auto" raised>
     <v-card-title>
-      {{ supplierInfo.name }}
+      {{ productTypeInfo.name }}
     </v-card-title>
     <v-card-subtitle>
-      {{ supplierInfo.description.length > 0 ? supplierInfo.description : 'No Description' }}
+      {{ productTypeInfo.description.length > 0 ? productTypeInfo.description : 'No Description' }}
     </v-card-subtitle>
     <v-card-actions>
       <v-btn text>
         View
       </v-btn>
-      <v-btn color="primary" depressed @click="editSupplier(supplierInfo)">
+      <v-btn color="primary" depressed @click="editProductType(productTypeInfo)">
         Edit
       </v-btn>
     </v-card-actions>
@@ -19,22 +19,22 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import Supplier from '@/interfaces/Supplier';
+import ProductType from '@/interfaces/ProductType';
 
 @Component
-export default class SupplierCard extends Vue {
-  @Prop() private supplierInfo!: Supplier;
+export default class ProductTypeCard extends Vue {
+  @Prop() private productTypeInfo!: ProductType;
 
-  @Prop() private supplierObject!: Supplier;
+  @Prop() private productTypeObject!: ProductType;
 
   @Prop() private dialogMode!: string;
 
   @Prop() private showDialog!: boolean;
 
-  editSupplier(supplier: Supplier) {
+  editProductType(productType: ProductType) {
     this.$emit('update:dialogMode', 'edit');
     this.$emit('update:showDialog', true);
-    this.$emit('update:supplierObject', supplier);
+    this.$emit('update:productTypeObject', productType);
   }
 }
 </script>
