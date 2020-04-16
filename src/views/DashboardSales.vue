@@ -60,11 +60,11 @@ import * as firebase from 'firebase/app';
 import Sale from '@/interfaces/Sale';
 import Product from '@/interfaces/Product';
 import User from '@/interfaces/User';
-import TotalSalesCard from '@/components/TotalSalesCard.vue';
-import RecentSalesCard from '@/components/RecentSalesCard.vue';
-import SalesCard from '@/components/SalesCard.vue';
-import ProfitsCard from '@/components/ProfitsCard.vue';
-import ProductsSoldChartCard from '@/components/ProductsSoldChartCard.vue';
+import TotalSalesCard from '@/components/cards/TotalSalesCard.vue';
+import RecentSalesCard from '@/components/cards/RecentSalesCard.vue';
+import SalesCard from '@/components/cards/SalesCard.vue';
+import ProfitsCard from '@/components/cards/ProfitsCard.vue';
+import ProductsSoldChartCard from '@/components/cards/ProductsSoldChartCard.vue';
 import SaleDialog from '@/components/dialogs/SaleDialog.vue';
 
 @Component({
