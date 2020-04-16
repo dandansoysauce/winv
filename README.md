@@ -24,7 +24,7 @@ Made with Vue.js and Firebase.
 
 * Dashboard
 * Add Users to Store
-* Restock Products
+* ~~Restock Products~~
 * Restock Alerts
 * View Card
 * Profile View
