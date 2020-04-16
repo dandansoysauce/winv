@@ -8,13 +8,13 @@
         <ValidationObserver ref="observer">
           <form novalidate>
             <ValidationProvider v-slot="{ errors }" name="Name" rules="required">
-              <v-text-field label="Name" filled v-model="productObject.name"
+              <v-text-field label="Name" filled v-model="productDialogObject.name"
                 :error-messages="errors" required></v-text-field>
             </ValidationProvider>
             <v-textarea label="Description" filled
-              v-model="productObject.description"></v-textarea>
+              v-model="productDialogObject.description"></v-textarea>
             <ValidationProvider v-slot="{ errors }" name="Category" rules="required">
-              <v-select :items="productTypes" v-model="productObject.productTypeId"
+              <v-select :items="productTypes" v-model="productDialogObject.productTypeId"
                 item-text="name" item-value="id" filled
                 label="Category" @input="productTypeChange()"
                 required
@@ -26,7 +26,7 @@
                 <ValidationProvider v-slot="{ errors }" name="Supplier Price"
                   rules="required|min_value:0.01">
                   <v-currency-field label="Supplier Price" filled
-                    v-model="productObject.pricePerItem"
+                    v-model="productDialogObject.pricePerItem"
                     :error-messages="errors" required
                     @input="setPricePercentage()"></v-currency-field>
                 </ValidationProvider>
@@ -35,36 +35,42 @@
                 <ValidationProvider v-slot="{ errors }" name="Quantity"
                   rules="required|min_value:1">
                   <v-text-field label="Quantity" filled
-                    v-model="productObject.quantity" type="number"
+                    v-model="productDialogObject.quantity" type="number"
                     min="1" @focus="$event.target.select()"
                     :error-messages="errors" required></v-text-field>
                 </ValidationProvider>
               </v-col>
             </v-row>
+            <v-switch
+              v-model="productDialogObject.manuallySetPrice"
+              @change="changeManualPricing(productDialogObject.manuallySetPrice)"
+              label="Set Price Manually"
+            ></v-switch>
             <ValidationProvider v-slot="{ errors }" name="Price Percentage"
               rules="required">
               <v-currency-field label="Price Percentage" filled
-                v-model="productObject.salePricePercentage"
-                :error-messages="errors" required
+                v-model="productDialogObject.salePricePercentage"
+                :error-messages="errors" :required="!productDialogObject.manuallySetPrice"
+                :disabled="productDialogObject.manuallySetPrice"
                 @input="setPricePercentage()"></v-currency-field>
             </ValidationProvider>
             <ValidationProvider v-slot="{ errors }" name="Sale Price"
               rules="required|min_value:0.01">
               <v-currency-field label="Sale Price" filled
-                v-model="productObject.salePrice"
-                :error-messages="errors" required
-                :disabled="productObject.salePricePercentage > 0"></v-currency-field>
+                v-model="productDialogObject.salePrice"
+                :error-messages="errors" :required="productDialogObject.manuallySetPrice"
+                :disabled="!productDialogObject.manuallySetPrice"></v-currency-field>
             </ValidationProvider>
             <v-row>
               <v-col cols="12" sm="6">
                 <v-text-field label="Product Code" filled
                   append-icon="mdi-text-box-plus-outline"
                   @click:append="generateRandomCode()"
-                  v-model="productObject.productCode" readonly></v-text-field>
+                  v-model="productDialogObject.productCode" readonly></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
                 <ValidationProvider v-slot="{ errors }" name="Supplied By" rules="required">
-                  <v-select :items="suppliers" v-model="productObject.suppliedBy"
+                  <v-select :items="suppliers" v-model="productDialogObject.suppliedBy"
                     item-text="name" item-value="id" filled
                     label="Supplied By"
                     :error-messages="errors" required
@@ -75,7 +81,7 @@
             <div class="d-flex">
               <h4>Custom Properties</h4>
             </div>
-            <v-row v-for="pr in productObject.properties" :key="pr.id">
+            <v-row v-for="pr in productDialogObject.properties" :key="pr.id">
               <v-col cols="12">
                 <ProductProperty :input-type="pr.propertyType"
                   :product-property="pr"></ProductProperty>
@@ -167,6 +173,14 @@ export default class ProductDialog extends Vue {
           db.collection('products').doc(this.productDialogObject.id).set(this.productDialogObject);
         }
       });
+  }
+
+  changeManualPricing(changed: boolean) {
+    if (changed) {
+      this.productDialogObject.salePricePercentage = 0;
+    } else {
+      this.productDialogObject.salePrice = 0;
+    }
   }
 
   setPricePercentage() {

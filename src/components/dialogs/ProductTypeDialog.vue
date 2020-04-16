@@ -8,11 +8,11 @@
         <ValidationObserver ref="observer">
           <form novalidate>
             <ValidationProvider v-slot="{ errors }" name="Name" rules="required">
-              <v-text-field label="Name" filled v-model="productTypeObject.name"
+              <v-text-field label="Name" filled v-model="productTypeDialogObject.name"
                 :error-messages="errors"></v-text-field>
             </ValidationProvider>
             <v-textarea label="Description" filled
-              v-model="productTypeObject.description"></v-textarea>
+              v-model="productTypeDialogObject.description"></v-textarea>
             <div class="d-flex">
               <h4>Custom Properties</h4>
               <v-spacer></v-spacer>
@@ -20,7 +20,7 @@
                 <v-icon dark>mdi-plus</v-icon>
               </v-btn>
             </div>
-            <v-row v-for="pr in productTypeObject.properties" :key="pr.id">
+            <v-row v-for="pr in productTypeDialogObject.properties" :key="pr.id">
               <v-col cols="12" sm="6">
                 <v-text-field label="Name" filled v-model="pr.name"></v-text-field>
               </v-col>

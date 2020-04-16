@@ -23,7 +23,7 @@
           <v-list-item-icon>
             <v-icon>mdi-cash</v-icon>
           </v-list-item-icon>
-          <v-list-item-subtitle>{{ productInfo.salePrice }} ea.</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ getCurrency(productInfo.salePrice) }} ea.</v-list-item-subtitle>
         </v-list-item>
       </v-col>
     </v-row>
@@ -44,6 +44,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import currency from 'currency.js';
 import Product from '@/interfaces/Product';
 
 @Component
@@ -56,10 +57,21 @@ export default class ProductCard extends Vue {
 
   @Prop() private showDialog!: boolean;
 
+  @Prop() private showRestockDialog!: boolean;
+
   editProduct(product: Product) {
     this.$emit('update:dialogMode', 'edit');
     this.$emit('update:showDialog', true);
     this.$emit('update:productObject', product);
+  }
+
+  restockProduct(product: Product) {
+    this.$emit('update:showRestockDialog', true);
+    this.$emit('update:productObject', product);
+  }
+
+  getCurrency(salePrice) {
+    return currency(salePrice);
   }
 }
 </script>

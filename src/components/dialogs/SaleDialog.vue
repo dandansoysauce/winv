@@ -9,7 +9,7 @@
           <form novalidate>
             <ValidationProvider v-slot="{ errors }" name="Product" rules="required">
               <v-autocomplete :items="products"
-                v-model="saleObject.productId"
+                v-model="saleDialogObject.productId"
                 :error-messages="errors"
                 :loading="searchLoading"
                 :search-input.sync="searchText"
@@ -24,14 +24,14 @@
             </ValidationProvider>
             <ValidationProvider v-slot="{ errors }" name="Quantity"
               rules="required|min_value:1">
-              <v-text-field label="Quantity" filled v-model="saleObject.quantity"
+              <v-text-field label="Quantity" filled v-model="saleDialogObject.quantity"
                 @input="calculateSale()" type="number" min="1"
                 @focus="$event.target.select()" required
                 :error-messages="errors"></v-text-field>
             </ValidationProvider>
-            <v-currency-field label="Total Sale" filled v-model="saleObject.totalSale"
+            <v-currency-field label="Total Sale" filled v-model="saleDialogObject.totalSale"
               readonly></v-currency-field>
-            <v-textarea label="Notes" filled v-model="saleObject.description"></v-textarea>
+            <v-textarea label="Notes" filled v-model="saleDialogObject.description"></v-textarea>
           </form>
         </ValidationObserver>
       </v-card-text>

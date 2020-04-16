@@ -9,6 +9,8 @@ export default interface Restock extends BaseObject {
   oldSupplierPrice: number;
   newSupplierPrice: number;
   newSalePrice: number;
+  newSalePricePercentage: number;
   supplierInfoChanged: boolean;
   priceAdjust: boolean;
+  percentageAdjust: boolean;
 }
