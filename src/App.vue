@@ -6,12 +6,37 @@
 
 <style lang="scss">
 html, body {
-  height: 100vh;
+  height: 100%;
+  max-height: 100%;
   overflow: hidden;
 }
 
 .full-height {
   height: 100%;
+}
+
+.max-height {
+  max-height: 100%;
+}
+
+.with-button-container {
+  height: calc(100% - 48px);
+}
+
+.with-tab-container {
+  height: calc(100% - 69px);
+}
+
+.inner-tab-container {
+  height: calc(100% - 50px);
+}
+
+.cards-container {
+  height: calc(100% - 84px);
+}
+
+.sale-container {
+  height: calc(100% - 60px);
 }
 
 #app {

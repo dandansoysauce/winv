@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app class="full-height" id="inspire">
     <v-navigation-drawer v-model="drawer" fixed app clipped width="350">
       <v-list>
         <v-list-item link to="/dashboard/home">
@@ -75,9 +75,9 @@
       <v-toolbar-title>{{ getStoreName }}</v-toolbar-title>
     </v-app-bar>
 
-    <v-content>
-      <v-container class="fill-height" fluid>
-        <router-view/>
+    <v-content class="full-height">
+      <v-container class="full-height" fluid>
+        <router-view />
       </v-container>
     </v-content>
   </v-app>
