@@ -9,6 +9,7 @@ Made with Vue.js and Firebase.
 </a>
 
 ### **[DEMO](https://simplewonder-inventory.web.app/)**
+_Demo sign up process does not need a real email address. Fake ones will do._
 
 ![sample shot](https://raw.githubusercontent.com/dandansoysauce/winv/master/resources/sample-img-1.png)
 
