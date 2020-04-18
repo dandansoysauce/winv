@@ -55,6 +55,8 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { db } from '@/main';
 import * as firebase from 'firebase/app';
+import User from '@/interfaces/User';
+import Settings from '@/interfaces/Settings';
 import { required, email } from 'vee-validate/dist/rules';
 import {
   extend, ValidationObserver, ValidationProvider, setInteractionMode,
@@ -97,7 +99,17 @@ export default class Home extends Vue {
           .then(() => firebase.auth().signInWithEmailAndPassword(this.userEmail, this.userPassword)
             .then((user) => {
               db.collection('users').doc(user?.user?.uid).get().then((snapshot) => {
-                this.$store.dispatch('setUser', snapshot.data());
+                const userData = snapshot.data() as User;
+                this.$store.dispatch('setUser', userData);
+                db.collection('settings')
+                  .where('storeId', '==', userData.storeId).get().then((settingsSnap) => {
+                    settingsSnap.forEach((doc) => {
+                      const myId = 'id';
+                      const settings = doc.data() as Settings;
+                      settings[myId] = doc.id;
+                      this.$store.dispatch('saveSettings', settings);
+                    });
+                  });
               });
             }));
       });

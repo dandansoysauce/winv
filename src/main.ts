@@ -4,6 +4,8 @@ import VueMasonry from 'vue-masonry-css';
 import firebase from 'firebase/app';
 import VCurrencyField from 'v-currency-field';
 import { firestorePlugin } from 'vuefire';
+import User from '@/interfaces/User';
+import Settings from '@/interfaces/Settings';
 import App from './App.vue';
 import router from './router';
 import store from './store';
@@ -59,12 +61,23 @@ new Vue({
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         db.collection('users').doc(user.uid).get().then((snapshot) => {
-          this.$store.dispatch('setUser', snapshot.data());
+          const userData = snapshot.data() as User;
+          this.$store.dispatch('setUser', userData);
+          db.collection('settings')
+            .where('storeId', '==', userData.storeId).get().then((settingsSnap) => {
+              settingsSnap.forEach((doc) => {
+                const myId = 'id';
+                const settings = doc.data() as Settings;
+                settings[myId] = doc.id;
+                this.$store.dispatch('saveSettings', settings);
+              });
+            });
         });
         if (router.currentRoute.name !== 'DashboardHome') {
           router.push({ name: 'DashboardHome' });
         }
-      } else if (user === null && router.currentRoute.name !== 'Home' && router.currentRoute.name !== 'AccountCreation') {
+      } else if (user === null && router.currentRoute.name !== 'Home'
+        && router.currentRoute.name !== 'AccountCreation') {
         router.push({ name: 'Home' });
       }
     });

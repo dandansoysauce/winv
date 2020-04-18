@@ -62,6 +62,14 @@ const routes = [
           title: 'Users',
         },
       },
+      {
+        path: 'settings',
+        name: 'Settings',
+        component: () => import('../views/SettingsComponent.vue'),
+        meta: {
+          title: 'Settings',
+        },
+      },
     ],
   },
   {
@@ -86,14 +94,6 @@ const routes = [
     component: () => import('../views/Profile.vue'),
     meta: {
       title: 'My Profile',
-    },
-  },
-  {
-    path: '/settings',
-    name: 'Settings',
-    component: () => import('../views/Settings.vue'),
-    meta: {
-      title: 'Settings',
     },
   },
   {

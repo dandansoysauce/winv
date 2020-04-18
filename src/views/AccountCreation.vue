@@ -113,6 +113,7 @@ import { db } from '@/main';
 import * as firebase from 'firebase/app';
 import User from '@/interfaces/User';
 import Store from '@/interfaces/Store';
+import Settings from '@/interfaces/Settings';
 import uniqid from 'uniqid';
 import {
   required, email, confirmed, min,
@@ -212,10 +213,28 @@ export default class AccountCreation extends Vue {
                 const updateProfile = data?.user?.updateProfile({
                   displayName: this.userObject.name,
                 });
+                const newStoreSettings = this.initDefaultSettings(res.id, data?.user?.uid);
+                db.collection('settings').add(newStoreSettings);
               });
             });
           });
       });
+  }
+
+  initDefaultSettings(storeId: string, userId?: string): Settings {
+    return {
+      storeHours: [],
+      isAlwaysOpen: false,
+      restockWarningThreshold: 30,
+      restockDangerThreshold: 10,
+      name: '',
+      modifiedAt: firebase.firestore.Timestamp.fromDate(new Date()),
+      createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
+      modifiedBy: userId ?? '',
+      enabled: true,
+      storeId,
+      description: '',
+    };
   }
 }
 </script>
