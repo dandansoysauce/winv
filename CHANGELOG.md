@@ -1,5 +1,12 @@
 # Changelogs
 
+## v0.2.1
+
+### Added
+
+* Settings page
+* Loading settings to store
+
 ## v0.2
 
 ### Added
