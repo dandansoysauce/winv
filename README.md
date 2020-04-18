@@ -8,7 +8,7 @@ Made with Vue.js and Firebase.
 <img src="https://raw.githubusercontent.com/dandansoysauce/winv/master/resources/patreon.png" alt="drawing" width="200"/>
 </a>
 
-### **BETA WILL BE UP SOON!**
+### **[DEMO](https://simplewonder-inventory.web.app/)**
 
 ![sample shot](https://raw.githubusercontent.com/dandansoysauce/winv/master/resources/sample-img-1.png)
 
@@ -28,7 +28,7 @@ Made with Vue.js and Firebase.
 * Restock Alerts
 * View Card
 * Profile View
-* Settings
+* ~~Settings~~
 * Mobile web UI
 * Mobile App
 * Chart Reports
