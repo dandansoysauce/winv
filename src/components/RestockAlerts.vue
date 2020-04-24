@@ -1,7 +1,7 @@
 <template>
-  <div class="full-height">
+  <div class="d-flex flex-column flex-1">
     <h2>Stock Alerts</h2>
-    <div class="full-height overflow-y-auto">
+    <div class="flex-overflow width-100 flex-align-content">
       <v-card v-for="danger in dangerProducts" :key="danger.id"
         class="mx-auto ma-2"
         color="red"
@@ -36,8 +36,6 @@
 import {
   Component, Vue, Prop, Watch,
 } from 'vue-property-decorator';
-import { db } from '@/main';
-import * as firebase from 'firebase/app';
 import Product from '@/interfaces/Product';
 import Settings from '@/interfaces/Settings';
 
@@ -64,24 +62,28 @@ export default class RestockAlerts extends Vue {
     this.dangerStock = 0;
   }
 
-  created() {
-    this.setStockAlerts(this.products);
-  }
-
-  @Watch('products')
+  @Watch('products', { immediate: true })
   onProductsChanged(value: Product[]) {
-    this.setStockAlerts(value);
+    this.setStockAlerts(value, this.storeSettingsStore);
   }
 
-  setStockAlerts(products: Product[]) {
-    this.storeSettings = this.$store.state.settings as Settings;
-    if (this.storeSettings) {
-      this.warningStock = Number(this.storeSettings.restockWarningThreshold);
-      this.dangerStock = Number(this.storeSettings.restockDangerThreshold);
+  setStockAlerts(products: Product[], settings: Settings) {
+    if (settings) {
+      this.warningStock = Number(settings.restockWarningThreshold);
+      this.dangerStock = Number(settings.restockDangerThreshold);
 
       this.warnProducts = products.filter((x) => x.quantity > this.dangerStock && x.quantity <= this.warningStock);
       this.dangerProducts = products.filter((x) => x.quantity > 0 && x.quantity <= this.dangerStock);
     }
+  }
+
+  get storeSettingsStore() {
+    return this.$store.state.settings as Settings;
+  }
+
+  @Watch('storeSettingsStore', { immediate: true })
+  onStoreSettingsChanged(value: Settings) {
+    this.setStockAlerts(this.products, value);
   }
 }
 </script>

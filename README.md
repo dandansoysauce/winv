@@ -23,10 +23,10 @@ _Demo sign up process does not need a real email address. Fake ones will do._
 
 ## Roadmap
 
-* Dashboard
+* ~~Dashboard~~
 * Add Users to Store
 * ~~Restock Products~~
-* Restock Alerts
+* ~~Restock Alerts~~
 * View Card
 * Profile View
 * ~~Settings~~

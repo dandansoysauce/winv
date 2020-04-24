@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" raised>
+  <v-card class="mx-auto width-100" raised>
     <v-card-text>
       <v-btn-toggle
         v-model="salesView"
