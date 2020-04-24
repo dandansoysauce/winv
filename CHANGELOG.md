@@ -1,5 +1,19 @@
 # Changelogs
 
+## v1.0.0
+
+### Added
+
+* Dashboard
+* Restock alerts
+* Mobile UI (partly)
+
+### Fixed
+
+* Store name
+* Dashboard layouts
+* Data lazy loading
+
 ## v0.2.1
 
 ### Added

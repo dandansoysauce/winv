@@ -72,7 +72,7 @@
 
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon class="d-md-none" @click.stop="drawer = !drawer" />
-      <v-toolbar-title>{{ getStoreName }}</v-toolbar-title>
+      <v-toolbar-title>{{ storeName }}</v-toolbar-title>
     </v-app-bar>
 
     <v-content class="full-height">
@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { db } from '@/main';
 import * as firebase from 'firebase/app';
 import User from '@/interfaces/User';
@@ -98,11 +98,14 @@ export default class Dashboard extends Vue {
 
   userStore: Store;
 
+  storeName: string;
+
   constructor() {
     super();
     this.drawer = true;
     this.currentUser = {} as User;
     this.userStore = {} as Store;
+    this.storeName = 'SimpleWonder Inventory';
   }
 
   created() {
@@ -112,6 +115,15 @@ export default class Dashboard extends Vue {
         this.userStore = snapshot.data() as Store;
       });
     }
+  }
+
+  get currentUserStore() {
+    return this.$store.state.currentUser;
+  }
+
+  @Watch('currentUserStore')
+  onCurrentUserStoreChanged(value: User) {
+    this.storeName = value.name;
   }
 
   get getStoreName() {
