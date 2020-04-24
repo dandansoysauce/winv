@@ -1,22 +1,20 @@
 <template>
-  <v-container class="full-height align-start" fluid>
+  <v-container class="d-flex flex-column full-height align-start" fluid>
     <div class="d-flex full-height flex-column width-100">
       <h1>Product Categories</h1>
-      <div class="d-flex full-height flex-column">
+      <div class="d-flex flex-column flex-1">
         <div class="d-flex mt-2">
           <v-btn raised color="primary" @click="showDialogAsAdd()">Add a Category</v-btn>
         </div>
-        <div class="with-button-container mt-4" fluid>
-          <v-row class="cards-container overflow-y-auto">
-            <v-col v-for="productType in productTypes" :key="productType.id"
-              cols="12" sm="6" md="4">
-              <ProductTypeCard :product-type-info="productType"
-                :show-dialog.sync="showDialog"
-                :dialog-mode.sync="dialogMode"
-                :product-type-object.sync="productTypeObject"></ProductTypeCard>
-            </v-col>
-          </v-row>
-        </div>
+        <v-row class="flex-overflow width-100 flex-align-content">
+          <v-col v-for="productType in productTypes" :key="productType.id"
+            cols="12" sm="6" md="4">
+            <ProductTypeCard :product-type-info="productType"
+              :show-dialog.sync="showDialog"
+              :dialog-mode.sync="dialogMode"
+              :product-type-object.sync="productTypeObject"></ProductTypeCard>
+          </v-col>
+        </v-row>
       </div>
     </div>
     <ProductTypeDialog :dialog-mode="dialogMode" :product-type-object="productTypeObject"

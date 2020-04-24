@@ -7,12 +7,26 @@
 <style lang="scss">
 html, body {
   height: 100%;
-  max-height: 100%;
   overflow: hidden;
 }
 
 .full-height {
   height: 100%;
+}
+
+.flex-1 {
+  flex: 1 1 auto;
+  min-height: 0px;
+}
+
+.flex-align-content {
+  align-content: flex-start;
+}
+
+.flex-overflow {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0px;
 }
 
 .max-height {

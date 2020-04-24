@@ -6,7 +6,7 @@
       </v-card-title>
       <v-card-text style="max-height: 600px;">
         <ValidationObserver ref="observer">
-          <form novalidate>
+          <form novalidate autocomplete="off">
             <ValidationProvider v-slot="{ errors }" name="Product" rules="required">
               <v-autocomplete :items="products"
                 v-model="saleDialogObject.productId"

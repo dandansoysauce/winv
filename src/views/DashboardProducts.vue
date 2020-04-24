@@ -1,23 +1,21 @@
 <template>
-  <v-container class="full-height align-start" fluid>
+  <v-container class="d-flex flex-column full-height align-start" fluid>
     <div class="d-flex full-height flex-column width-100">
       <h1>Products</h1>
-      <div class="d-flex full-height flex-column">
+      <div class="d-flex flex-column flex-1">
         <div class="d-flex mt-2">
           <v-btn raised color="primary" @click="showDialogAsAdd()">Add Product</v-btn>
         </div>
-        <div class="with-button-container mt-4" fluid>
-          <v-row class="cards-container overflow-y-auto">
-            <v-col v-for="product in products" :key="product.id"
-              cols="12" sm="6" md="4">
-              <ProductCard :product-info="product"
-                :dialog-mode.sync="dialogMode"
-                :product-object.sync="productObject"
-                :show-dialog.sync="showDialog"
-                :show-restock-dialog.sync="showRestockDialog"></ProductCard>
-            </v-col>
-          </v-row>
-        </div>
+        <v-row class="flex-overflow width-100 flex-align-content">
+          <v-col v-for="product in products" :key="product.id"
+            cols="12" sm="6" md="4">
+            <ProductCard :product-info="product"
+              :dialog-mode.sync="dialogMode"
+              :product-object.sync="productObject"
+              :show-dialog.sync="showDialog"
+              :show-restock-dialog.sync="showRestockDialog"></ProductCard>
+          </v-col>
+        </v-row>
       </div>
     </div>
     <RestockDialog :show-restock-dialog.sync="showRestockDialog"

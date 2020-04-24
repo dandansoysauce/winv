@@ -6,7 +6,7 @@
       </v-card-title>
       <v-card-text style="max-height: 600px;">
         <ValidationObserver ref="restockObserver">
-          <form novalidate>
+          <form novalidate autocomplete="off">
             <ValidationProvider v-slot="{ errors }" name="Quantity"
               rules="required|min_value:1">
               <v-text-field label="Quantity" filled
