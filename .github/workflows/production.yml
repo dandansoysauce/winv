@@ -33,7 +33,7 @@ jobs:
 
     # Runs a set of commands using the runners shell
     - name: Archive Production Artifact
-      uses: actions/upload-artifact@1.0.0
+      uses: actions/upload-artifact@v2
       with:
         name: dist
         path: dist
@@ -43,13 +43,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
       - name: Download Artifact
         uses: actions/download-artifact@master
         with:
-          name: dist
+          path: dist
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+        uses: w9jds/firebase-action@v2
         with:
           args: deploy --only hosting -P production
         env:
