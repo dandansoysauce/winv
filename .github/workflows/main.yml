@@ -50,11 +50,11 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
-          name: dist
+          path: dist
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only hosting
+          args: deploy --only hosting -P dev
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
