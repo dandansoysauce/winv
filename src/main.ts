@@ -17,10 +17,8 @@ export const db = firebase.initializeApp(
   {
     projectId: process.env.VUE_APP_PROJECT_ID,
     apiKey: process.env.VUE_APP_FIREBASE_WEBAPI,
-    storageBucket: process.env.VUE_APP_FIREBASE_BUCKET,
   },
 ).firestore();
-export const storage = firebase.storage();
 
 Vue.config.productionTip = false;
 

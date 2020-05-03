@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "simplewonder-inventory"
+    "default": "simplewonder-inventory",
+    "dev": "simplewonder-inventory",
+    "production": "simplewonder-inventory-prod"
   }
 }
