@@ -47,13 +47,6 @@ new Vue({
     productTypes: [],
     products: [],
   }),
-  firestore() {
-    return {
-      suppliers: db.collection('suppliers').orderBy('enabled'),
-      productTypes: db.collection('producttypes').orderBy('enabled'),
-      products: db.collection('products').orderBy('enabled'),
-    };
-  },
   render: (h) => h(App),
   created() {
     firebase.auth().onAuthStateChanged((user) => {
