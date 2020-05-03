@@ -1,17 +1,19 @@
 # ![icon](https://raw.githubusercontent.com/dandansoysauce/winv/master/resources/icon-32.png "icon") SimpleWonder - A simple, wonderful Inventory Management System ![CI](https://github.com/dandansoysauce/winv/workflows/CI/badge.svg)
 
-SimpleWonder is a web-based inventory management system that offers fast, simple and modern look-and-feel.
+[SimpleWonder IMS](https://simplewonderims.online) is a web-based inventory management system that offers fast, simple and modern look-and-feel.
 
 Made with Vue.js and Firebase.
+
+### **[WEBSITE](https://simplewonderims.online)**
 
 <a href="https://www.patreon.com/daniona">
 <img src="https://raw.githubusercontent.com/dandansoysauce/winv/master/resources/patreon.png" alt="drawing" width="200"/>
 </a>
 
+![sample shot](https://raw.githubusercontent.com/dandansoysauce/winv/master/resources/sample-img-1.png)
+
 ### **[DEMO](https://simplewonder-inventory.web.app/)**
 _Demo sign up process does not need a real email address. Fake ones will do._
-
-![sample shot](https://raw.githubusercontent.com/dandansoysauce/winv/master/resources/sample-img-1.png)
 
 ## Features
 
