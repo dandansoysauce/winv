@@ -43,7 +43,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-divider></v-divider>
-        <v-list-item link>
+        <v-list-item link to="/dashboard/profile">
           <v-list-item-action>
             <v-icon>mdi-account-circle</v-icon>
           </v-list-item-action>

@@ -70,6 +70,14 @@ const routes = [
           title: 'Settings',
         },
       },
+      {
+        path: 'profile',
+        name: 'Profile',
+        component: () => import('../views/Profile.vue'),
+        meta: {
+          title: 'My Profile',
+        },
+      },
     ],
   },
   {
@@ -89,19 +97,27 @@ const routes = [
     },
   },
   {
-    path: '/profile',
-    name: 'Profile',
-    component: () => import('../views/Profile.vue'),
-    meta: {
-      title: 'My Profile',
-    },
-  },
-  {
     path: '/accountcreation/:inviteCode?',
     name: 'AccountCreation',
     component: () => import('../views/AccountCreation.vue'),
     meta: {
       title: 'Account Creation',
+    },
+  },
+  {
+    path: '/auth/action',
+    name: 'Auth',
+    component: () => import('../views/Auth.vue'),
+    meta: {
+      title: 'Authentication',
+    },
+  },
+  {
+    path: '/forgotpassword',
+    name: 'ForgotPassword',
+    component: () => import('../views/ForgotPassword.vue'),
+    meta: {
+      title: 'Forgot Password',
     },
   },
 ];
