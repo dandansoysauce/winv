@@ -97,7 +97,6 @@ export default class Profile extends Vue {
 
   @Watch('currentUserStore')
   onCurrentUserChanged(value: User) {
-    console.log(value);
     this.currentUser = value;
   }
 }
