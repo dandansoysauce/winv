@@ -30,7 +30,7 @@ _Demo sign up process does not need a real email address. Fake ones will do._
 * ~~Restock Products~~
 * ~~Restock Alerts~~
 * View Card
-* Profile View
+* ~~Profile View~~
 * ~~Settings~~
 * Mobile web UI
 * Mobile App
