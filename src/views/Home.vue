@@ -5,7 +5,7 @@
         <v-card class="mx-auto" width="600" max-width="600" raised>
           <v-list-item two-line>
             <v-list-item-content>
-              <div class="overline mb-4"><b>SimpleWonder Inventory v1.0.2BETA</b></div>
+              <div class="overline mb-4"><b>SimpleWonder Inventory v1.1.0BETA</b></div>
               <v-list-item-title class="headline mb-1">Sign In</v-list-item-title>
             </v-list-item-content>
           </v-list-item>

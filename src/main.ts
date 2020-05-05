@@ -64,7 +64,7 @@ new Vue({
               });
             });
         });
-        if (router.currentRoute.name !== 'DashboardHome') {
+        if (router.currentRoute.name === 'Home' || router.currentRoute.name === 'AccountCreation') {
           router.push({ name: 'DashboardHome' });
         }
       } else if (user === null && router.currentRoute.name !== 'Home'
