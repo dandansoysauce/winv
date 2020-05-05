@@ -6,18 +6,24 @@
     <v-card-text v-if="currentUser" style="max-height: 600px;">
       <v-btn v-if="!currentUser.emailVerified" class="mb-4" outlined large
         @click="verifyEmail()">Verify Email</v-btn>
-      <ValidationProvider v-slot="{ errors }" name="Email" rules="required|email">
-        <v-text-field label="Email" filled v-model="currentUser.email"
-          :error-messages="errors" required></v-text-field>
-      </ValidationProvider>
-      <ValidationProvider v-slot="{ errors }" name="Name" rules="required">
-        <v-text-field label="Name" filled v-model="currentUser.name"
-          :error-messages="errors" required></v-text-field>
-      </ValidationProvider>
-      <ValidationProvider v-slot="{ errors }" name="Phone Number" rules="required">
-        <v-text-field label="Phone Number" filled v-model="currentUser.phoneNumber"
-          :error-messages="errors" required></v-text-field>
-      </ValidationProvider>
+      <ValidationObserver ref="profileObserver">
+        <ValidationProvider v-slot="{ errors }" name="Email" rules="required|email">
+          <v-text-field label="Email" filled v-model="currentUser.email"
+            :error-messages="errors" required></v-text-field>
+        </ValidationProvider>
+        <ValidationProvider v-slot="{ errors }" name="Name" rules="required">
+          <v-text-field label="Name" filled v-model="currentUser.name"
+            :error-messages="errors" required></v-text-field>
+        </ValidationProvider>
+        <ValidationProvider v-slot="{ errors }" name="Phone Number" rules="required">
+          <v-text-field label="Phone Number" filled v-model="currentUser.phoneNumber"
+            :error-messages="errors" required></v-text-field>
+        </ValidationProvider>
+        <div class="d-flex flex-row mb-4">
+          <v-btn outlined large @click="saveProfile()">Save Profile</v-btn>
+        </div>
+      </ValidationObserver>
+      <v-divider></v-divider>
       <p class="subtitle-2 mt-4">Change Password</p>
       <ValidationProvider v-slot="{ errors }" name="New Password" rules="required">
         <v-text-field label="New Password" filled v-model="currentUser.password"
@@ -31,19 +37,19 @@
         <v-text-field label="Old Password" filled v-model="oldPassword"
           :error-messages="errors" required></v-text-field>
       </ValidationProvider>
+      <div class="d-flex flex-row mb-4">
+        <v-btn outlined large>Change Password</v-btn>
+      </div>
     </v-card-text>
-    <v-card-actions class="card-action-padding">
-      <v-btn text>Close</v-btn>
-      <v-btn color="primary" depressed width="120" @click="saveProfile()">Save</v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import * as firebase from 'firebase/app';
+import { db } from '@/main';
 import User from '@/interfaces/User';
-import { required, email } from 'vee-validate/dist/rules';
+import { required, email, confirmed } from 'vee-validate/dist/rules';
 import {
   extend, ValidationObserver, ValidationProvider, setInteractionMode,
 } from 'vee-validate';
@@ -56,6 +62,10 @@ extend('required', {
 extend('email', {
   ...email,
   message: '{_field_} must be a valid email',
+});
+extend('confirmed', {
+  ...confirmed,
+  message: '{_field_} does not match.',
 });
 
 @Component({
@@ -76,6 +86,24 @@ export default class Profile extends Vue {
     this.currentUser = {} as User;
     this.confirmPassword = '';
     this.oldPassword = '';
+  }
+
+  saveProfile() {
+    (this.$refs.profileObserver as Vue & { validate: () => Promise<boolean> })
+      .validate().then((success) => {
+        if (!success) return;
+
+        const user = firebase.auth().currentUser;
+        if (user) {
+          user.updateProfile({ displayName: this.currentUser.name });
+          user.updateEmail(this.currentUser.email);
+          db.collection('users').doc(user.uid).update({
+            phoneNumber: this.currentUser.phoneNumber,
+            name: this.currentUser.name,
+            email: this.currentUser.email,
+          });
+        }
+      });
   }
 
   verifyEmail() {

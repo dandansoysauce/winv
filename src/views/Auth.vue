@@ -23,6 +23,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import * as firebase from 'firebase/app';
+import { db } from '@/main';
 import User from '@/interfaces/User';
 
 @Component
@@ -62,6 +63,10 @@ export default class Auth extends Vue {
     firebase.auth().applyActionCode(code).then(() => {
       this.message = 'Email Verified';
       this.subtitleMessage = 'Your email has been verified.';
+      const user = firebase.auth().currentUser;
+      if (user) {
+        db.collection('users').doc(user.uid).update({ emailVerified: user.emailVerified });
+      }
     }).catch(() => {
       this.message = 'Email Verification Unsuccessful.';
       this.subtitleMessage = 'Code is either invalid or expired.';
@@ -77,7 +82,7 @@ export default class Auth extends Vue {
     }
   }
 
-  get currentUserStore() {
+  get currentUserStore(): User {
     return this.$store.state.currentUser;
   }
 
