@@ -25,21 +25,28 @@
       </ValidationObserver>
       <v-divider></v-divider>
       <p class="subtitle-2 mt-4">Change Password</p>
-      <ValidationProvider v-slot="{ errors }" name="New Password" rules="required">
-        <v-text-field label="New Password" filled v-model="currentUser.password"
-          :error-messages="errors" required></v-text-field>
-      </ValidationProvider>
-      <ValidationProvider v-slot="{ errors }" name="Confirm Password" rules="required">
-        <v-text-field label="Confirm Password" filled v-model="confirmPassword"
-          :error-messages="errors" required></v-text-field>
-      </ValidationProvider>
-      <ValidationProvider v-slot="{ errors }" name="Old Password" rules="required">
-        <v-text-field label="Old Password" filled v-model="oldPassword"
-          :error-messages="errors" required></v-text-field>
-      </ValidationProvider>
-      <div class="d-flex flex-row mb-4">
-        <v-btn outlined large>Change Password</v-btn>
-      </div>
+      <ValidationObserver ref="passwordObserver">
+        <ValidationProvider v-slot="{ errors }" name="New Password"
+          rules="required|confirmed:confirmation|min:8">
+          <v-text-field label="New Password" filled v-model="password"
+            :error-messages="errors" required
+            type="password"></v-text-field>
+        </ValidationProvider>
+        <ValidationProvider v-slot="{ errors }" name="Confirm Password" rules="required"
+          vid="confirmation">
+          <v-text-field label="Confirm Password" filled v-model="confirmPassword"
+            :error-messages="errors" required
+            type="password"></v-text-field>
+        </ValidationProvider>
+        <ValidationProvider v-slot="{ errors }" name="Old Password" rules="required">
+          <v-text-field label="Old Password" filled v-model="oldPassword"
+            :error-messages="errors" required
+            type="password"></v-text-field>
+        </ValidationProvider>
+        <div class="d-flex flex-row mb-4">
+          <v-btn outlined large @click="changePassword()">Change Password</v-btn>
+        </div>
+      </ValidationObserver>
     </v-card-text>
   </v-card>
 </template>
@@ -49,7 +56,9 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import * as firebase from 'firebase/app';
 import { db } from '@/main';
 import User from '@/interfaces/User';
-import { required, email, confirmed } from 'vee-validate/dist/rules';
+import {
+  required, email, confirmed, min,
+} from 'vee-validate/dist/rules';
 import {
   extend, ValidationObserver, ValidationProvider, setInteractionMode,
 } from 'vee-validate';
@@ -67,6 +76,10 @@ extend('confirmed', {
   ...confirmed,
   message: '{_field_} does not match.',
 });
+extend('min', {
+  ...min,
+  message: '{_field_} may not be less than {length} characters.',
+});
 
 @Component({
   components: {
@@ -77,6 +90,8 @@ extend('confirmed', {
 export default class Profile extends Vue {
   currentUser: User;
 
+  password: string;
+
   confirmPassword: string;
 
   oldPassword: string;
@@ -84,6 +99,7 @@ export default class Profile extends Vue {
   constructor() {
     super();
     this.currentUser = {} as User;
+    this.password = '';
     this.confirmPassword = '';
     this.oldPassword = '';
   }
@@ -101,6 +117,21 @@ export default class Profile extends Vue {
             phoneNumber: this.currentUser.phoneNumber,
             name: this.currentUser.name,
             email: this.currentUser.email,
+          });
+        }
+      });
+  }
+
+  changePassword() {
+    (this.$refs.profileObserver as Vue & { validate: () => Promise<boolean> })
+      .validate().then((success) => {
+        if (!success) return;
+
+        const user = firebase.auth().currentUser;
+        if (user) {
+          const cred = firebase.auth.EmailAuthProvider.credential(this.currentUser.email, this.oldPassword);
+          user.reauthenticateWithCredential(cred).then(() => {
+            user.updatePassword(this.password);
           });
         }
       });

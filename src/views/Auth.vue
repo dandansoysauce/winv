@@ -9,7 +9,27 @@
           <v-card-text>
             <h2>{{ message }}</h2>
             <p>{{ subtitleMessage }}</p>
+            <div v-if="actionMode === 'resetPassword'">
+              <ValidationObserver ref="passwordObserver">
+                <ValidationProvider v-slot="{ errors }" name="New Password"
+                  rules="required|confirmed:confirmation|min:8">
+                  <v-text-field label="New Password" filled v-model="password"
+                    :error-messages="errors" required
+                    type="password"></v-text-field>
+                </ValidationProvider>
+                <ValidationProvider v-slot="{ errors }" name="Confirm Password" rules="required"
+                  vid="confirmation">
+                  <v-text-field label="Confirm Password" filled v-model="confirmPassword"
+                    :error-messages="errors" required
+                    type="password"></v-text-field>
+                </ValidationProvider>
+              </ValidationObserver>
+            </div>
           </v-card-text>
+          <v-card-actions class="card-action-padding" v-if="actionMode === 'resetPassword'">
+            <v-btn outlined large link to="/dashboard/home">Go to Dashboard</v-btn>
+            <v-btn color="primary" depressed large @click="changePassword()">Change Password</v-btn>
+          </v-card-actions>
           <v-card-actions class="card-action-padding" v-if="actionMode === 'verifyEmail'">
             <v-btn outlined large link to="/dashboard/home">Go to Dashboard</v-btn>
             <v-btn color="primary" depressed large @click="resendVerification()">Resend Verification</v-btn>
@@ -25,8 +45,34 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import * as firebase from 'firebase/app';
 import { db } from '@/main';
 import User from '@/interfaces/User';
+import {
+  required, confirmed, min,
+} from 'vee-validate/dist/rules';
+import {
+  extend, ValidationObserver, ValidationProvider, setInteractionMode,
+} from 'vee-validate';
 
-@Component
+setInteractionMode('eager');
+extend('required', {
+  ...required,
+  message: '{_field_} is required',
+});
+extend('confirmed', {
+  ...confirmed,
+  message: '{_field_} does not match.',
+});
+extend('min', {
+  ...min,
+  message: '{_field_} may not be less than {length} characters.',
+});
+
+
+@Component({
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+  },
+})
 export default class Auth extends Vue {
   message: string;
 
@@ -36,11 +82,17 @@ export default class Auth extends Vue {
 
   currentUser: User;
 
+  password: string;
+
+  confirmPassword: string;
+
   constructor() {
     super();
     this.message = '';
     this.subtitleMessage = '';
     this.actionMode = '';
+    this.password = '';
+    this.confirmPassword = '';
     this.currentUser = {} as User;
   }
 
@@ -53,10 +105,27 @@ export default class Auth extends Vue {
         this.verifyEmail(oobCode);
         break;
       }
+      case 'resetPassword': {
+        this.message = 'Password Reset';
+        this.subtitleMessage = 'Enter your new password.';
+        break;
+      }
       default:
         break;
     }
     this.currentUser = this.currentUserStore;
+  }
+
+  changePassword() {
+    const code = this.$route.query.oobCode as string;
+    firebase.auth().verifyPasswordResetCode(code).then(() => {
+      firebase.auth().confirmPasswordReset(code, this.password).then(() => {
+        this.$router.push({ name: 'Home' });
+      });
+    }).catch(() => {
+      this.message = 'Password Reset Unsuccessful.';
+      this.subtitleMessage = 'Code is either invalid or expired.';
+    });
   }
 
   verifyEmail(code: string) {

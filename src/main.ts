@@ -68,7 +68,8 @@ new Vue({
           router.push({ name: 'DashboardHome' });
         }
       } else if (user === null && router.currentRoute.name !== 'Home'
-        && router.currentRoute.name !== 'AccountCreation') {
+        && router.currentRoute.name !== 'AccountCreation'
+        && router.currentRoute.name !== 'Auth') {
         router.push({ name: 'Home' });
       }
     });

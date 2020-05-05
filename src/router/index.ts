@@ -112,6 +112,14 @@ const routes = [
       title: 'Authentication',
     },
   },
+  {
+    path: '/forgotpassword',
+    name: 'ForgotPassword',
+    component: () => import('../views/ForgotPassword.vue'),
+    meta: {
+      title: 'Forgot Password',
+    },
+  },
 ];
 
 const router = new VueRouter({

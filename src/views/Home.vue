@@ -5,7 +5,7 @@
         <v-card class="mx-auto" width="600" max-width="600" raised>
           <v-list-item two-line>
             <v-list-item-content>
-              <div class="overline mb-4"><b>SimpleWonder Inventory v1.1.0BETA</b></div>
+              <div class="overline mb-4"><b>SimpleWonder Inventory v1.2.0BETA</b></div>
               <v-list-item-title class="headline mb-1">Sign In</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -26,12 +26,13 @@
                 </ValidationProvider>
               </form>
             </ValidationObserver>
+            <v-btn depressed color="primary" @click="loginUser()" width="160">Login</v-btn>
+            <v-divider class="mt-4"></v-divider>
+            <div class="d-flex flex-row">
+              <v-btn class="mt-4" outlined large to="/accountcreation">Sign Up</v-btn>
+              <v-btn class="mt-4 ml-3" depressed large to="/forgotpassword">Forgot Password</v-btn>
+            </div>
           </v-card-text>
-
-          <v-card-actions class="card-action-padding">
-            <v-btn depressed to="/accountcreation">Sign Up</v-btn>
-            <v-btn depressed color="primary" @click="loginUser()" width="160">Enter</v-btn>
-          </v-card-actions>
         </v-card>
         <div class="mt-3 mx-auto flex-row">
           <v-btn href="https://www.buymeacoffee.com/WLmhc53q0" color="warning" dark
